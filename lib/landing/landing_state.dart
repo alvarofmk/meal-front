@@ -1,6 +1,10 @@
 part of 'landing_bloc.dart';
 
-enum LandingStatus { initial, success, failure }
+enum LandingStatus {
+  initial,
+  success,
+  failure,
+}
 
 class LandingState extends Equatable {
   const LandingState(

@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front/landing/landing_bloc.dart';
 import 'package:front/model/RestauranteListResult.dart';
+import 'package:front/restaurantmenu/restaurant_screen.dart';
 
 const String imgBase = "http://localhost:8080/restaurante/";
 const String imgSuffix = "/img/";
@@ -14,44 +15,22 @@ class LandingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int _selectedIndex = 1;
     return BlocProvider(
       create: (context) => LandingBloc()..add(RestaurantsFetched()),
-      child: Scaffold(
-          appBar: AppBar(
-            leading: Padding(
-              padding: EdgeInsets.all(5),
-              child: Image.asset('assets/logo.png'),
-            ),
-            actions: [
-              Padding(
-                padding: EdgeInsets.all(5),
-                child: IconButton(
-                  onPressed: () {
-                    BlocProvider.of<LandingBloc>(context)
-                        .add(RestaurantsFetched());
-                  },
-                  icon: const Icon(Icons.search),
-                  color: Colors.red.shade700,
-                ),
-              )
-            ],
-            elevation: 0,
-            scrolledUnderElevation: 1,
-            backgroundColor: Colors.white,
-          ),
-          body: RestaurantList()),
+      child: MainBody(),
     );
   }
 }
 
-class RestaurantList extends StatefulWidget {
-  const RestaurantList({super.key});
+class MainBody extends StatefulWidget {
+  const MainBody({super.key});
 
   @override
-  State<RestaurantList> createState() => _RestaurantListState();
+  State<MainBody> createState() => _MainBodyState();
 }
 
-class _RestaurantListState extends State<RestaurantList> {
+class _MainBodyState extends State<MainBody> {
   final _scrollController = ScrollController();
 
   @override
@@ -134,32 +113,36 @@ class RestauranteItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Material(
-      child: Container(
-        height: 200,
-        child: Card(
-          semanticContainer: true,
-          clipBehavior: Clip.antiAliasWithSaveLayer,
-          child: Column(children: [
-            Expanded(
-              child: Image.network(
-                imgBase + restaurante.id! + imgSuffix,
-                fit: BoxFit.fill,
+        child: GestureDetector(
+            child: Container(
+              height: 200,
+              child: Card(
+                semanticContainer: true,
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                child: Column(children: [
+                  Expanded(
+                    child: Image.network(
+                      imgBase + restaurante.id! + imgSuffix,
+                      fit: BoxFit.fill,
+                    ),
+                    flex: 7,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Text(restaurante.nombre!,
+                        style: TextStyle(fontWeight: FontWeight.w600)),
+                  ),
+                ]),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                elevation: 5,
+                margin: EdgeInsets.all(10),
               ),
-              flex: 7,
             ),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: Text(restaurante.nombre!,
-                  style: TextStyle(fontWeight: FontWeight.w600)),
-            ),
-          ]),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          elevation: 5,
-          margin: EdgeInsets.all(10),
-        ),
-      ),
-    );
+            onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => RestaurantScreen(restaurante.id!)))));
   }
 }
