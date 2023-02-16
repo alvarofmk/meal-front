@@ -7,6 +7,7 @@ abstract class RestaurantMenuEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class NavigatedToRestaurant extends RestaurantMenuEvent {
-  NavigatedToRestaurant(restaurantId);
+class RestaurantFetched extends RestaurantMenuEvent {
+  RestaurantFetched(this.restaurantId);
+  String restaurantId;
 }

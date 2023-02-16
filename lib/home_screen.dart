@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'auth/login_screen.dart';
+import 'login/login_screen.dart';
 import 'landing/landing_screen.dart';
 
-const List<Widget> _widgetOptions = <Widget>[
+List<Widget> _widgetOptions = <Widget>[
   LoginScreen(),
   LandingScreen(),
   Text(

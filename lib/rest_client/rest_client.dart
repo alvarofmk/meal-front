@@ -31,7 +31,11 @@ class RestClient {
     try {
       Uri uri = Uri.parse(ApiConstants.baseUrl + url);
 
-      final response = await _httpClient.post(uri, body: jsonEncode(body));
+      Map<String, String> headers = Map();
+      headers.addAll({"Content-Type": 'application/json'});
+
+      final response =
+          await _httpClient.post(uri, body: jsonEncode(body), headers: headers);
       var responseJson = _response(response);
       return responseJson;
     } on SocketException catch (ex) {

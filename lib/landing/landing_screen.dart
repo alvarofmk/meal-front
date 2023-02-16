@@ -95,12 +95,14 @@ class BottomLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
+        child: Padding(
+      padding: EdgeInsets.only(top: 6, bottom: 6),
       child: SizedBox(
         height: 24,
         width: 24,
         child: CircularProgressIndicator(strokeWidth: 1.5),
       ),
-    );
+    ));
   }
 }
 
@@ -143,6 +145,8 @@ class RestauranteItem extends StatelessWidget {
             onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => RestaurantScreen(restaurante.id!)))));
+                    builder: (context) => RestaurantScreen(
+                          restaurantId: restaurante.id!,
+                        )))));
   }
 }

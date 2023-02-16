@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:front/model/restaurante_detail.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
@@ -21,5 +22,13 @@ class RestaurantRepository {
 
     var jsonResponse = await _client.get(url);
     return RestauranteListResult.fromJson(jsonDecode(jsonResponse));
+  }
+
+  Future<RestauranteDetailResult> getRestaurantDetails(
+      String restaurantId) async {
+    String url = baseUrl + restaurantId;
+
+    var jsonResponse = await _client.get(url);
+    return RestauranteDetailResult.fromJson(jsonDecode(jsonResponse));
   }
 }
