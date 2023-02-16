@@ -5,9 +5,11 @@ import 'package:front/landing/landing_screen.dart';
 
 void main() {
   configureDependencies();
-  runApp(const App());
+  runApp(App());
 }
 
 class App extends MaterialApp {
-  const App({super.key}) : super(home: const LandingScreen());
+  App({super.key})
+      : super(
+            home: const LandingScreen(), theme: ThemeData(fontFamily: 'Inter'));
 }

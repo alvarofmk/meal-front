@@ -134,11 +134,31 @@ class RestauranteItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Material(
-      child: Card(
-        child: Column(children: [
-          Image.network(imgBase + restaurante.id! + imgSuffix),
-          Text(restaurante.nombre!),
-        ]),
+      child: Container(
+        height: 200,
+        child: Card(
+          semanticContainer: true,
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          child: Column(children: [
+            Expanded(
+              child: Image.network(
+                imgBase + restaurante.id! + imgSuffix,
+                fit: BoxFit.fill,
+              ),
+              flex: 7,
+            ),
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: Text(restaurante.nombre!,
+                  style: TextStyle(fontWeight: FontWeight.w600)),
+            ),
+          ]),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          elevation: 5,
+          margin: EdgeInsets.all(10),
+        ),
       ),
     );
   }
