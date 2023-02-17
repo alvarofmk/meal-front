@@ -11,3 +11,5 @@ class RestaurantFetched extends RestaurantMenuEvent {
   RestaurantFetched(this.restaurantId);
   String restaurantId;
 }
+
+class NextPlatosFetched extends RestaurantMenuEvent {}

@@ -16,7 +16,7 @@ class AuthenticationRepository {
     //_client = RestClient();
   }
 
-  Future<dynamic> doLogin(String username, String password) async {
+  Future<LoginResponse> doLogin(String username, String password) async {
     String url = "/auth/login";
 
     var jsonResponse = await _client.post(

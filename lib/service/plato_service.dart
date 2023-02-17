@@ -1,3 +1,4 @@
+import 'package:front/model/plato_detail_result.dart';
 import 'package:front/model/plato_list_result.dart';
 import 'package:front/repository/plato_repository.dart';
 import 'package:front/repository/restaurant_repository.dart';
@@ -16,5 +17,9 @@ class PlatoService {
 
   Future<PlatoListResult> getByRestaurant(String restaurantId, int page) async {
     return _platoRepository.getByRestaurant(restaurantId, page);
+  }
+
+  Future<PlatoDetailResult> getDetails(String platoId) async {
+    return _platoRepository.getDetails(platoId);
   }
 }

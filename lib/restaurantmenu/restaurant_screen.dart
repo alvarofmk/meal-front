@@ -5,6 +5,7 @@ import 'package:front/restaurantmenu/restaurant_menu_bloc.dart';
 
 import '../landing/landing_bloc.dart';
 import '../landing/landing_screen.dart';
+import '../platodetail/plato_detail_screen.dart';
 
 const String imgBase = "http://localhost:8080/restaurante/";
 const String imgBasePlato = "http://localhost:8080/plato/";
@@ -108,7 +109,7 @@ class _RestaurantUIState extends State<RestaurantUI> {
   }
 
   void _onScroll() {
-    if (_isBottom) context.read<RestaurantMenuBloc>();
+    if (_isBottom) context.read<RestaurantMenuBloc>().add(NextPlatosFetched());
   }
 
   bool get _isBottom {
@@ -126,29 +127,31 @@ class PlatoItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     return Padding(
       padding: EdgeInsets.only(left: 5, right: 5),
-      child: GestureDetector(
-          child: Container(
-            height: 70,
-            child: ListTile(
-              leading: Image.network(
-                imgBasePlato + plato.id! + imgSuffix,
-                fit: BoxFit.contain,
-              ),
-              title: Text(plato.nombre!),
-              subtitle: Text("${plato.precio!} €"),
-              trailing: IconButton(
-                icon: Icon(Icons.arrow_right_rounded),
-                onPressed: () {},
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-            ),
+      child: Container(
+        height: 70,
+        child: ListTile(
+          leading: Image.network(
+            imgBasePlato + plato.id! + imgSuffix,
+            fit: BoxFit.contain,
           ),
-          onTap: () => {}),
+          title: Text(plato.nombre!),
+          subtitle: Text("${plato.precio!} €"),
+          trailing: IconButton(
+            icon: Icon(Icons.arrow_right_rounded),
+            onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PlatoScreen(
+                          platoId: plato.id!,
+                        ))),
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+        ),
+      ),
     );
   }
 }

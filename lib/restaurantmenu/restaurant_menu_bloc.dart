@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
@@ -30,7 +32,9 @@ class RestaurantMenuBloc
     _platoService = getIt<PlatoService>();
     on<RestaurantFetched>(
       _onRestaurantFetched,
-      transformer: throttleDroppable(throttleDuration),
+    );
+    on<NextPlatosFetched>(
+      _onNextPlatosFetched,
     );
   }
 
@@ -54,8 +58,17 @@ class RestaurantMenuBloc
               currentPage: 0),
         );
       }
-      final platos = await _platoService.getByRestaurant(
-          event.restaurantId, state.currentPage + 1);
+    } catch (_) {
+      emit(state.copyWith(
+          id: event.restaurantId, status: RestaurantMenuStatus.failure));
+    }
+  }
+
+  FutureOr<void> _onNextPlatosFetched(
+      NextPlatosFetched event, Emitter<RestaurantMenuState> emit) async {
+    try {
+      final platos =
+          await _platoService.getByRestaurant(state.id, state.currentPage + 1);
       platos.contenido!.isEmpty
           ? emit(state.copyWith(hasReachedMax: true))
           : emit(
@@ -66,8 +79,7 @@ class RestaurantMenuBloc
                   currentPage: state.currentPage + 1),
             );
     } catch (_) {
-      emit(state.copyWith(
-          id: event.restaurantId, status: RestaurantMenuStatus.failure));
+      emit(state.copyWith(status: RestaurantMenuStatus.failure));
     }
   }
 }

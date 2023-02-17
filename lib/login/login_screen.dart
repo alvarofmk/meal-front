@@ -7,9 +7,6 @@ import '../service/auth_service.dart';
 import 'login_bloc.dart';
 
 class LoginScreen extends StatelessWidget {
-
-  
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +38,11 @@ class LoginScreen extends StatelessWidget {
                   ],
                 ));
               }
-              // return splash screen
+              if (state is AuthenticationAuthenticated) {
+                return Center(
+                  child: Text("Hola " + state.user.name),
+                );
+              }
               return Center(
                 child: CircularProgressIndicator(
                   strokeWidth: 2,

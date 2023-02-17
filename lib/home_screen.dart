@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'auth/auth_bloc.dart';
 import 'login/login_screen.dart';
 import 'landing/landing_screen.dart';
 
 List<Widget> _widgetOptions = <Widget>[
-  LoginScreen(),
+  BlocBuilder<AuthenticationBloc, AuthenticationState>(
+      builder: (context, state) {
+    if (state is AuthenticationNotAuthenticated) {
+      return LoginScreen();
+    } else if (state is AuthenticationAuthenticated) {
+      return Text("Autenticado");
+    }
+    return Text("Loading");
+  }),
   LandingScreen(),
   Text(
     'Carrito no implementado',

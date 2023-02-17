@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:front/model/plato_detail_result.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
@@ -21,5 +22,12 @@ class PlatoRepository {
 
     var jsonResponse = await _client.get(url);
     return PlatoListResult.fromJson(jsonDecode(jsonResponse));
+  }
+
+  Future<PlatoDetailResult> getDetails(String platoId) async {
+    String url = baseUrl + platoId;
+
+    var jsonResponse = await _client.get(url);
+    return PlatoDetailResult.fromJson(jsonDecode(jsonResponse));
   }
 }

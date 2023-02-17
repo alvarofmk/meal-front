@@ -121,20 +121,22 @@ class RestauranteItem extends StatelessWidget {
               child: Card(
                 semanticContainer: true,
                 clipBehavior: Clip.antiAliasWithSaveLayer,
-                child: Column(children: [
-                  Expanded(
-                    child: Image.network(
-                      imgBase + restaurante.id! + imgSuffix,
-                      fit: BoxFit.fill,
-                    ),
-                    flex: 7,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(8),
-                    child: Text(restaurante.nombre!,
-                        style: TextStyle(fontWeight: FontWeight.w600)),
-                  ),
-                ]),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                        child: Image.network(
+                          imgBase + restaurante.id! + imgSuffix,
+                          fit: BoxFit.fill,
+                        ),
+                        flex: 7,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Text(restaurante.nombre!,
+                            style: TextStyle(fontWeight: FontWeight.w600)),
+                      ),
+                    ]),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
