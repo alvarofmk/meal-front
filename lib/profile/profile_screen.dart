@@ -121,6 +121,9 @@ class _ProfileUIState extends State<ProfileUI> {
                         "Log out",
                         style: TextStyle(color: Colors.red.shade600),
                       )),
+                  SizedBox(
+                    height: 15,
+                  ),
                   OwnerSection(state.restaurantes!),
                 ]),
               ),
@@ -144,7 +147,13 @@ class OwnerSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text("Tus restaurantes"),
+        Padding(
+          padding: EdgeInsets.only(bottom: 8),
+          child: Text(
+            "Tus restaurantes",
+            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20),
+          ),
+        ),
         ListView.builder(
           shrinkWrap: true,
           itemBuilder: (BuildContext context, int index) {
@@ -156,13 +165,13 @@ class OwnerSection extends StatelessWidget {
                 ),
                 elevation: 1,
                 child: Container(
-                  height: 70,
+                  height: 50,
                   child: ListTile(
                     leading: Image.network(
                       imgBase + restaurantes[index].id! + imgSuffix,
+                      fit: BoxFit.fill,
                     ),
                     title: Text(restaurantes[index].nombre!),
-                    subtitle: Text(restaurantes[index].id!),
                     trailing: OutlinedButton(
                         onPressed: () {}, child: Text("Gestionar")),
                   ),

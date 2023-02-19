@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../auth/auth_bloc.dart';
 import '../config/locator.dart';
+import '../register/register_screen.dart';
 import '../service/auth_service.dart';
 import 'login_bloc.dart';
 
@@ -10,9 +11,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Login'),
-      ),
+      backgroundColor: Colors.red.shade700,
       body: SafeArea(
           minimum: const EdgeInsets.all(16),
           child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
@@ -111,65 +110,95 @@ class __SignInFormState extends State<_SignInForm> {
               child: CircularProgressIndicator(),
             );
           }
-          return Form(
-            key: _key,
-            autovalidateMode: _autoValidate
-                ? AutovalidateMode.always
-                : AutovalidateMode.disabled,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Username',
-                      filled: true,
-                      isDense: true,
-                    ),
-                    controller: _usernameController,
-                    keyboardType: TextInputType.text,
-                    autocorrect: false,
-                    validator: (value) {
-                      if (value == null) {
-                        return 'Username is required.';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(
-                    height: 12,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      filled: true,
-                      isDense: true,
-                    ),
-                    obscureText: true,
-                    controller: _passwordController,
-                    validator: (value) {
-                      if (value == null) {
-                        return 'Password is required.';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  //RaisedButton(
-                  ElevatedButton(
-                    //color: Theme.of(context).primaryColor,
-                    //textColor: Colors.white,
-                    //padding: const EdgeInsets.all(16),
-                    //shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(8.0)),
-                    child: Text('LOG IN'),
-                    onPressed:
-                        state is LoginLoading ? () {} : _onLoginButtonPressed,
-                  )
-                ],
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                "assets/logowhite.png",
+                height: 250,
               ),
-            ),
+              Form(
+                key: _key,
+                autovalidateMode: _autoValidate
+                    ? AutovalidateMode.always
+                    : AutovalidateMode.disabled,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      TextFormField(
+                        decoration: InputDecoration(
+                            labelStyle: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w200),
+                            labelText: 'Username',
+                            filled: true,
+                            isDense: true,
+                            icon: Icon(Icons.person)),
+                        controller: _usernameController,
+                        keyboardType: TextInputType.text,
+                        autocorrect: false,
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Username is required.';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(
+                        height: 12,
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          focusColor: Colors.white,
+                          labelStyle: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.w200),
+                          labelText: 'Contraseña',
+                          filled: true,
+                          isDense: true,
+                          icon: Icon(Icons.password),
+                        ),
+                        obscureText: true,
+                        controller: _passwordController,
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Password is required.';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      //RaisedButton(
+                      ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.red.shade600)),
+                        //textColor: Colors.white,
+                        //padding: const EdgeInsets.all(16),
+                        //shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(8.0)),
+                        child: Text('LOG IN'),
+                        onPressed: state is LoginLoading
+                            ? () {}
+                            : _onLoginButtonPressed,
+                      ),
+                      Row(
+                        children: [
+                          Text("¿No tienes cuenta?"),
+                          TextButton(
+                              onPressed: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => RegisterForm())),
+                              child: Text("Registrate aquí."))
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              )
+            ],
           );
         },
       ),
