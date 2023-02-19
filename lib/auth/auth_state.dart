@@ -22,6 +22,20 @@ class AuthenticationAuthenticated extends AuthenticationState {
   List<Object> get props => [user];
 }
 
+class AuthenticationAuthenticatedClient extends AuthenticationAuthenticated {
+  AuthenticationAuthenticatedClient({required user}) : super(user: user);
+
+  @override
+  List<Object> get props => [user];
+}
+
+class AuthenticationAuthenticatedOwner extends AuthenticationAuthenticated {
+  AuthenticationAuthenticatedOwner({required user}) : super(user: user);
+
+  @override
+  List<Object> get props => [user];
+}
+
 class AuthenticationFailure extends AuthenticationState {
   final String message;
 

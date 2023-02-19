@@ -25,10 +25,15 @@ class AuthenticationBloc extends Bloc<AuthEvent, AuthenticationState> {
   ) async {
     emit(AuthenticationLoading());
     try {
+      _authenticationService.signOut();
       final currentUser = await _authenticationService.getCurrentUser();
 
       if (currentUser != null) {
-        emit(AuthenticationAuthenticated(user: currentUser));
+        if (currentUser.roles.contains("OWNER")) {
+          emit(AuthenticationAuthenticatedOwner(user: currentUser));
+        } else {
+          emit(AuthenticationAuthenticatedClient(user: currentUser));
+        }
       } else {
         emit(AuthenticationNotAuthenticated());
       }
@@ -42,7 +47,11 @@ class AuthenticationBloc extends Bloc<AuthEvent, AuthenticationState> {
     UserLoggedIn event,
     Emitter<AuthenticationState> emit,
   ) async {
-    emit(AuthenticationAuthenticated(user: event.user));
+    if (event.user.roles.contains("OWNER")) {
+      emit(AuthenticationAuthenticatedOwner(user: event.user));
+    } else {
+      emit(AuthenticationAuthenticatedClient(user: event.user));
+    }
   }
 
   _onUserLoggedOut(

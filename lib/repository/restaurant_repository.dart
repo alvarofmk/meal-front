@@ -31,4 +31,11 @@ class RestaurantRepository {
     var jsonResponse = await _client.get(url);
     return RestauranteDetailResult.fromJson(jsonDecode(jsonResponse));
   }
+
+  Future<RestauranteListResult> getManagedRestaurants() async {
+    String url = baseUrl + "managed";
+
+    var jsonResponse = await _client.get(url);
+    return RestauranteListResult.fromJson(jsonDecode(jsonResponse));
+  }
 }

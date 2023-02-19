@@ -21,4 +21,8 @@ class RestaurantService {
       String restaurantId) async {
     return _restaurantRepository.getRestaurantDetails(restaurantId);
   }
+
+  Future<RestauranteListResult> getManagedRestaurants() async {
+    return _restaurantRepository.getManagedRestaurants();
+  }
 }

@@ -34,7 +34,8 @@ class JwtAuthenticationService extends AuthenticationService {
       return User(
           email: user.username ?? "",
           name: user.nombre ?? "",
-          accessToken: user.token ?? "");
+          accessToken: user.token ?? "",
+          roles: user.roles ?? List.empty());
     }
     return null;
   }
@@ -49,7 +50,8 @@ class JwtAuthenticationService extends AuthenticationService {
     return User(
         email: response.username ?? "",
         name: response.nombre ?? "",
-        accessToken: response.token ?? "");
+        accessToken: response.token ?? "",
+        roles: response.roles ?? List.empty());
   }
 
   @override

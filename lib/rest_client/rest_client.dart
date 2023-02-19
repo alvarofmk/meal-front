@@ -1,19 +1,88 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:http_interceptor/http_interceptor.dart';
 import 'package:injectable/injectable.dart';
 import 'package:http/http.dart' as http;
+
+import '../model/login_model.dart';
+import '../service/localstorage_service.dart';
 
 class ApiConstants {
   static String baseUrl = "http://localhost:8080";
 }
 
+class AuthorizationInterceptor implements InterceptorContract {
+  late LocalStorageService _localStorageService;
+
+  AuthorizationInterceptor() {
+    //_localStorageService = getIt<LocalStorageService>();
+    GetIt.I
+        .getAsync<LocalStorageService>()
+        .then((value) => _localStorageService = value);
+  }
+
+  @override
+  Future<RequestData> interceptRequest({required RequestData data}) async {
+    try {
+      String? loggedUser = _localStorageService.getFromDisk("user");
+      if (loggedUser != null) {
+        var user = LoginResponse.fromJson(jsonDecode(loggedUser));
+        data.headers["Authorization"] = "Bearer " + user.token!;
+      }
+    } catch (e) {
+      print(e);
+    }
+
+    return Future.value(data);
+  }
+
+  @override
+  Future<ResponseData> interceptResponse({required ResponseData data}) async {
+    if (data.statusCode == 401 || data.statusCode == 403) {
+      Future.delayed(Duration(seconds: 1), () {});
+    }
+
+    return Future.value(data);
+  }
+}
+
+class HeadersApiInterceptor implements InterceptorContract {
+  @override
+  Future<RequestData> interceptRequest({required RequestData data}) async {
+    try {
+      data.headers["Content-Type"] = "application/json";
+      data.headers["Accept"] = "application/json";
+    } catch (e) {
+      print(e);
+    }
+    return data;
+  }
+
+  @override
+  Future<ResponseData> interceptResponse({required ResponseData data}) async =>
+      data;
+}
+
 @Order(-10)
 @singleton
 class RestClient {
-  RestClient();
+  var _httpClient;
 
-  final _httpClient = http.Client();
+  RestClient() {
+    _httpClient = InterceptedClient.build(
+        interceptors: [HeadersApiInterceptor(), AuthorizationInterceptor()]);
+  }
+
+  RestClient.withInterceptors(List<InterceptorContract> interceptors) {
+    // El interceptor con los encabezados sobre JSON se añade si no está incluido en la lista
+    if (interceptors
+        .where((element) => element is HeadersApiInterceptor)
+        .isEmpty) interceptors..add(HeadersApiInterceptor());
+    _httpClient = InterceptedClient.build(interceptors: interceptors);
+  }
 
   Future<dynamic> get(String url) async {
     try {

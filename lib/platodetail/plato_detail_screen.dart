@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front/auth/auth_bloc.dart';
+import 'package:front/login/login_screen.dart';
 import 'package:front/model/plato_detail_result.dart';
 import 'package:front/platodetail/platodetail_bloc.dart';
 
@@ -35,108 +37,148 @@ class _PlatoUIState extends State<PlatoUI> {
             return const Center(child: Text('Fallo al cargar el plato'));
           case PlatodetailStatus.success:
             return Scaffold(
-              appBar: AppBar(
-                title: Text(state.plato!.nombre!),
-                backgroundColor: Colors.red.shade700,
-              ),
-              body: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  verticalDirection: VerticalDirection.down,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Image.network(
-                      imgBase + state.plato!.id! + imgSuffix,
-                      height: 300,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            state.plato!.nombre!,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600, fontSize: 15),
-                          ),
-                          Text(
-                            "${state.plato!.precio!} €",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w800, fontSize: 15),
-                          )
-                        ],
+                appBar: AppBar(
+                  title: Text(state.plato!.nombre!),
+                  backgroundColor: Colors.red.shade700,
+                ),
+                body: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    verticalDirection: VerticalDirection.down,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Image.network(
+                        imgBase + state.plato!.id! + imgSuffix,
+                        height: 300,
                       ),
-                    ),
-                    Padding(
-                        padding: EdgeInsets.only(left: 15, right: 15, top: 5),
-                        child: Text(
-                          state.plato!.descripcion!,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w300, fontSize: 12),
-                        )),
-                    Padding(
+                      Padding(
                         padding: EdgeInsets.all(15),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Ingredientes",
-                              style: TextStyle(fontWeight: FontWeight.w500),
+                              state.plato!.nombre!,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600, fontSize: 15),
                             ),
-                            Wrap(
-                                children: List.generate(
-                              state.plato!.ingredientes!.length,
-                              (index) => Container(
-                                  margin: EdgeInsets.only(right: 4, top: 4),
-                                  child: Material(
-                                    elevation: 2,
-                                    child: Container(
-                                        padding: EdgeInsets.all(3),
-                                        child: Text(
-                                            state.plato!.ingredientes![index])),
-                                  )),
-                            ))
+                            Text(
+                              "${state.plato!.precio!} €",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w800, fontSize: 15),
+                            )
                           ],
-                        )),
-                    Padding(
-                        padding: EdgeInsets.all(15),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  "Valoraciones",
-                                  style: TextStyle(fontWeight: FontWeight.w500),
-                                ),
-                                if (state.plato!.valoracionMedia != null)
-                                  Text(
-                                    "${state.plato!.valoracionMedia}",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w500),
-                                  ),
-                              ],
-                            ),
-                            if (state.plato!.valoraciones != null)
-                              Expanded(
-                                  child: ListView.builder(
-                                shrinkWrap: true,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return ReviewItem(
-                                      valoracion:
-                                          state.plato!.valoraciones![index]);
-                                },
-                                itemCount: state.plato!.valoraciones!.length,
+                        ),
+                      ),
+                      Padding(
+                          padding: EdgeInsets.only(left: 15, right: 15, top: 5),
+                          child: Text(
+                            state.plato!.descripcion!,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w300, fontSize: 12),
+                          )),
+                      Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Ingredientes",
+                                style: TextStyle(fontWeight: FontWeight.w600),
+                              ),
+                              Wrap(
+                                  children: List.generate(
+                                state.plato!.ingredientes!.length,
+                                (index) => Container(
+                                    margin: EdgeInsets.only(right: 4, top: 4),
+                                    child: Material(
+                                      elevation: 2,
+                                      child: Container(
+                                          padding: EdgeInsets.all(3),
+                                          child: Text(state
+                                              .plato!.ingredientes![index])),
+                                    )),
                               ))
-                          ],
-                        )),
-                  ]),
-            );
+                            ],
+                          )),
+                      Padding(
+                          padding: EdgeInsets.only(
+                              left: 15, right: 15, top: 15, bottom: 5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Valoraciones",
+                                style: TextStyle(fontWeight: FontWeight.w600),
+                              ),
+                              if (state.plato!.valoracionMedia != null)
+                                Text(
+                                  "${state.plato!.valoracionMedia}",
+                                  style: TextStyle(fontWeight: FontWeight.w600),
+                                ),
+                            ],
+                          )),
+                      if (state.plato!.valoraciones != null)
+                        Padding(
+                          padding: EdgeInsets.all(15),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemBuilder: (BuildContext context, int index) {
+                              return ReviewItem(
+                                  valoracion:
+                                      state.plato!.valoraciones![index]);
+                            },
+                            itemCount: state.plato!.valoraciones!.length,
+                          ),
+                        ),
+                      if (state.plato!.valoraciones == null)
+                        Center(
+                          child: Column(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.all(5),
+                                child: Text(
+                                  "Se el primero en dejar tu opinión.",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w300,
+                                      fontSize: 12),
+                                ),
+                              ),
+                              BlocBuilder<AuthenticationBloc,
+                                  AuthenticationState>(
+                                builder: (context, state) {
+                                  if (state is AuthenticationAuthenticated) {
+                                    return ElevatedButton(
+                                        onPressed: rate(),
+                                        child: Text("Valorar"));
+                                  } else if (state
+                                      is AuthenticationNotAuthenticated) {
+                                    return ElevatedButton(
+                                        onPressed: () => Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    LoginScreen())),
+                                        child: Text("Loggeate para valorar."));
+                                  } else {
+                                    return Text("We made a fucky wucky");
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                        )
+                    ],
+                  ),
+                ));
           case PlatodetailStatus.initial:
-            return const Center(child: CircularProgressIndicator());
+            return CircularProgressIndicator();
         }
       },
     );
   }
+
+  rate() {}
 }
 
 class ReviewItem extends StatelessWidget {
@@ -146,18 +188,21 @@ class ReviewItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(left: 5, right: 5),
-      child: Container(
-        height: 70,
-        child: ListTile(
-          leading: Text("${valoracion.nota}"),
-          title: Text(valoracion.username!),
-          subtitle: Text(valoracion.comentario!),
-          leadingAndTrailingTextStyle:
-              TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
+    return Container(
+      margin: EdgeInsets.only(bottom: 5),
+      child: Material(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        elevation: 1,
+        child: Container(
+          height: 70,
+          child: ListTile(
+            leading: Text("${valoracion.nota}"),
+            title: Text(valoracion.username!),
+            subtitle: Text(valoracion.comentario!),
+            leadingAndTrailingTextStyle: TextStyle(
+                fontWeight: FontWeight.w800, fontSize: 20, color: Colors.black),
           ),
         ),
       ),

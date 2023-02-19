@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front/profile/profile_screen.dart';
 
 import 'auth/auth_bloc.dart';
 import 'login/login_screen.dart';
@@ -11,7 +12,7 @@ List<Widget> _widgetOptions = <Widget>[
     if (state is AuthenticationNotAuthenticated) {
       return LoginScreen();
     } else if (state is AuthenticationAuthenticated) {
-      return Text("Autenticado");
+      return ProfileScreen();
     }
     return Text("Loading");
   }),
