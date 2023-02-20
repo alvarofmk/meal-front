@@ -69,7 +69,7 @@ class HeadersApiInterceptor implements InterceptorContract {
 @Order(-10)
 @singleton
 class RestClient {
-  var _httpClient;
+  InterceptedClient? _httpClient = null;
 
   RestClient() {
     _httpClient = InterceptedClient.build(
@@ -88,7 +88,7 @@ class RestClient {
     try {
       Uri uri = Uri.parse(ApiConstants.baseUrl + url);
 
-      final response = await _httpClient.get(uri);
+      final response = await _httpClient!.get(uri);
       var responseJson = _response(response);
       return responseJson;
     } on SocketException catch (ex) {
@@ -103,8 +103,20 @@ class RestClient {
       Map<String, String> headers = Map();
       headers.addAll({"Content-Type": 'application/json'});
 
-      final response =
-          await _httpClient.post(uri, body: jsonEncode(body), headers: headers);
+      final response = await _httpClient!
+          .post(uri, body: jsonEncode(body), headers: headers);
+      var responseJson = _response(response);
+      return responseJson;
+    } on SocketException catch (ex) {
+      throw Exception('No internet connection: ${ex.message}');
+    }
+  }
+
+  Future<dynamic> delete(String url) async {
+    try {
+      Uri uri = Uri.parse(ApiConstants.baseUrl + url);
+
+      final response = await _httpClient!.delete(uri);
       var responseJson = _response(response);
       return responseJson;
     } on SocketException catch (ex) {

@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front/auth/auth_bloc.dart';
 import 'package:front/model/RestauranteListResult.dart';
 import 'package:front/profile/profile_bloc.dart';
+import 'package:front/restaurant_form/restaurant_form_screen.dart';
+
+import '../restaurant_manage/manage_restaurant_screen.dart';
 
 const String imgBase = "http://localhost:8080/restaurante/";
 const String imgSuffix = "/img/";
@@ -194,13 +197,15 @@ class OwnerSection extends StatelessWidget {
                 child: Container(
                   height: 50,
                   child: ListTile(
-                    leading: Image.network(
-                      imgBase + restaurantes[index].id! + imgSuffix,
-                      fit: BoxFit.fill,
-                    ),
                     title: Text(restaurantes[index].nombre!),
                     trailing: OutlinedButton(
-                        onPressed: () {}, child: Text("Gestionar")),
+                        onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ManageRestaurantScreen(
+                                      restaurantId: restaurantes[index].id!,
+                                    ))),
+                        child: Text("Gestionar")),
                   ),
                 ),
               ),
@@ -208,6 +213,10 @@ class OwnerSection extends StatelessWidget {
           },
           itemCount: restaurantes.length,
         ),
+        ElevatedButton(
+            onPressed: () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => RestaurantForm())),
+            child: Text("Añadir nuevo resstaurante"))
       ],
     );
   }

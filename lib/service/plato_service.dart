@@ -27,4 +27,8 @@ class PlatoService {
       String platoId, double nota, String? comentario) async {
     return _platoRepository.rate(platoId, nota, comentario);
   }
+
+  Future<void> deleteById(String platoId) async {
+    return _platoRepository.deleteById(platoId);
+  }
 }

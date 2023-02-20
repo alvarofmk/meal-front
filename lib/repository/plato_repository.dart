@@ -40,4 +40,9 @@ class PlatoRepository {
         url, RateRequest(nota: nota, comentario: comentario));
     return PlatoDetailResult.fromJson(jsonDecode(jsonResponse));
   }
+
+  void deleteById(String platoId) async {
+    String url = baseUrl + "${platoId}";
+    await _client.delete(url);
+  }
 }
