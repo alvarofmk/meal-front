@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:front/register/register_bloc.dart';
 
+import '../home_screen.dart';
+
+const textBaseStyle = TextStyle(color: Colors.white);
+const textDetailStyle =
+    TextStyle(color: Colors.white, fontWeight: FontWeight.w300, fontSize: 12);
+
 class RegisterForm extends StatefulWidget {
   const RegisterForm({Key? key}) : super(key: key);
 
@@ -27,6 +33,7 @@ class _RegisterFormState extends State<RegisterForm> {
               ),
             ),
             child: Scaffold(
+              backgroundColor: Colors.red.shade700,
               resizeToAvoidBottomInset: false,
               appBar: AppBar(
                 title: const Text('Registro'),
@@ -38,10 +45,16 @@ class _RegisterFormState extends State<RegisterForm> {
                       LoadingDialog.hide(context),
                   onSuccess: (context, state) {
                     LoadingDialog.hide(context);
-
+                    final registerBloc =
+                        BlocProvider.of<RegisterFormBloc>(context);
                     if (state.stepCompleted == state.lastStep) {
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (_) => const SuccessScreen()));
+                      if (registerBloc.registerAsOwner.value) {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (_) => const SuccessScreen()));
+                      } else {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => HomeScreen()));
+                      }
                     }
                   },
                   onFailure: (context, state) {
@@ -75,14 +88,19 @@ class _RegisterFormState extends State<RegisterForm> {
           Container(
             height: 200,
             width: 200,
-            child: Text("Registrate como cliente"),
+            child: Text(
+              "Registrate como cliente",
+              style: textBaseStyle,
+            ),
           ),
           SwitchFieldBlocBuilder(
             booleanFieldBloc: registerFormBloc.registerAsOwner,
             body: Container(
               alignment: Alignment.centerLeft,
               child: const Text(
-                  '¿Quieres repartir tu comida con nuestra ayuda?, ¡Marca esta casilla y te ayudamos a hacerlo!'),
+                '¿Quieres repartir tu comida con nuestra ayuda?, ¡Marca esta casilla y te ayudamos a hacerlo!',
+                style: textDetailStyle,
+              ),
             ),
           ),
         ],
@@ -96,6 +114,7 @@ class _RegisterFormState extends State<RegisterForm> {
       content: Column(
         children: <Widget>[
           TextFieldBlocBuilder(
+            textStyle: textBaseStyle,
             textFieldBloc: registerFormBloc.username,
             keyboardType: TextInputType.name,
             decoration: const InputDecoration(
@@ -104,6 +123,7 @@ class _RegisterFormState extends State<RegisterForm> {
             ),
           ),
           TextFieldBlocBuilder(
+            textStyle: textBaseStyle,
             textFieldBloc: registerFormBloc.password,
             keyboardType: TextInputType.visiblePassword,
             decoration: const InputDecoration(
@@ -112,6 +132,7 @@ class _RegisterFormState extends State<RegisterForm> {
             ),
           ),
           TextFieldBlocBuilder(
+            textStyle: textBaseStyle,
             textFieldBloc: registerFormBloc.verifyPassword,
             keyboardType: TextInputType.visiblePassword,
             decoration: const InputDecoration(
@@ -120,6 +141,7 @@ class _RegisterFormState extends State<RegisterForm> {
             ),
           ),
           TextFieldBlocBuilder(
+            textStyle: textBaseStyle,
             textFieldBloc: registerFormBloc.email,
             keyboardType: TextInputType.emailAddress,
             decoration: const InputDecoration(
@@ -128,9 +150,16 @@ class _RegisterFormState extends State<RegisterForm> {
             ),
           ),
           TextFieldBlocBuilder(
+            textStyle: TextStyle(color: Colors.white),
+            cursorColor: Colors.white,
             textFieldBloc: registerFormBloc.name,
             keyboardType: TextInputType.name,
             decoration: const InputDecoration(
+              focusColor: Colors.white,
+              focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  borderSide:
+                      const BorderSide(color: Colors.white, width: 2.0)),
               labelText: 'Nombre completo',
               prefixIcon: Icon(Icons.person_2_outlined),
             ),

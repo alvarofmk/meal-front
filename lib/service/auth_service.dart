@@ -4,12 +4,17 @@ import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
 import '../model/login_model.dart';
+import '../model/register_model.dart';
 import '../repository/auth_repository.dart';
 import 'localstorage_service.dart';
 
 abstract class AuthenticationService {
   Future<User?> getCurrentUser();
   Future<User?> signInWithUsernameAndPassword(String username, String password);
+  Future<RegisterResponse> registerClient(String username, String password,
+      String verifyPassword, String email, String name);
+  Future<RegisterResponse> registerOwner(String username, String password,
+      String verifyPassword, String email, String name);
   Future<void> signOut();
 }
 
@@ -57,5 +62,21 @@ class JwtAuthenticationService extends AuthenticationService {
   @override
   Future<void> signOut() async {
     await _localStorageService.deleteFromDisk("user");
+  }
+
+  @override
+  Future<RegisterResponse> registerClient(String username, String password,
+      String verifyPassword, String email, String name) async {
+    RegisterResponse response = await _authenticationRepository.registerClient(
+        username, password, verifyPassword, email, name);
+    return response;
+  }
+
+  @override
+  Future<RegisterResponse> registerOwner(String username, String password,
+      String verifyPassword, String email, String name) async {
+    RegisterResponse response = await _authenticationRepository.registerOwner(
+        username, password, verifyPassword, email, name);
+    return response;
   }
 }

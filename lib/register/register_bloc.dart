@@ -1,7 +1,11 @@
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
+import '../config/locator.dart';
+import '../service/auth_service.dart';
+
 class RegisterFormBloc extends FormBloc<String, String> {
   final registerAsOwner = BooleanFieldBloc();
+  late final AuthenticationService _authenticationService;
 
   final username = TextFieldBloc(
     validators: [FieldBlocValidators.required],
@@ -33,6 +37,7 @@ class RegisterFormBloc extends FormBloc<String, String> {
   );
 
   RegisterFormBloc() {
+    _authenticationService = getIt<JwtAuthenticationService>();
     addFieldBlocs(
       step: 0,
       fieldBlocs: [registerAsOwner],
@@ -52,7 +57,27 @@ class RegisterFormBloc extends FormBloc<String, String> {
         verifyPassword.addFieldError("Las contraseñas no coinciden");
         emitFailure();
       } else {
-        emitSuccess();
+        try {
+          if (registerAsOwner.value) {
+            final result = await _authenticationService.registerOwner(
+                username.value,
+                password.value,
+                verifyPassword.value,
+                email.value,
+                name.value);
+            emitSuccess();
+          } else {
+            final result = await _authenticationService.registerClient(
+                username.value,
+                password.value,
+                verifyPassword.value,
+                email.value,
+                name.value);
+            emitSuccess();
+          }
+        } on Exception catch (e) {
+          emitFailure();
+        }
       }
     }
   }

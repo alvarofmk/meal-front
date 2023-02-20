@@ -172,9 +172,6 @@ class __SignInFormState extends State<_SignInForm> {
                       ),
                       //RaisedButton(
                       ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all(Colors.red.shade600)),
                         //textColor: Colors.white,
                         //padding: const EdgeInsets.all(16),
                         //shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(8.0)),
@@ -183,16 +180,23 @@ class __SignInFormState extends State<_SignInForm> {
                             ? () {}
                             : _onLoginButtonPressed,
                       ),
-                      Row(
-                        children: [
-                          Text("¿No tienes cuenta?"),
-                          TextButton(
-                              onPressed: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => RegisterForm())),
-                              child: Text("Registrate aquí."))
-                        ],
+                      Padding(
+                        padding: EdgeInsets.all(5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("¿No tienes cuenta?"),
+                            TextButton(
+                                style: TextButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                ),
+                                onPressed: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => RegisterForm())),
+                                child: Text("Registrate aquí."))
+                          ],
+                        ),
                       )
                     ],
                   ),

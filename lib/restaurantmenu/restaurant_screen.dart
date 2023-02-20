@@ -51,7 +51,8 @@ class _RestaurantUIState extends State<RestaurantUI> {
             return Scaffold(
               appBar: AppBar(
                 title: Text(state.restaurante!.nombre!),
-                backgroundColor: Colors.red.shade700,
+                backgroundColor: Theme.of(context).colorScheme.onSecondary,
+                foregroundColor: Theme.of(context).colorScheme.primary,
               ),
               body: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

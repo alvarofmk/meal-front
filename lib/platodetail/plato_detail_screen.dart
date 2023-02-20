@@ -48,7 +48,8 @@ class _PlatoUIState extends State<PlatoUI> {
                   leading: BackButton(),
                   automaticallyImplyLeading: false,
                   title: Text(state.plato!.nombre!),
-                  backgroundColor: Colors.red.shade700,
+                  backgroundColor: Theme.of(context).colorScheme.onSecondary,
+                  foregroundColor: Theme.of(context).colorScheme.primary,
                 ),
                 drawer: Drawer(
                   // Add a ListView to the drawer. This ensures the user can scroll
