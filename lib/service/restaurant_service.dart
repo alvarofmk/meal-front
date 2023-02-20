@@ -25,4 +25,8 @@ class RestaurantService {
   Future<RestauranteListResult> getManagedRestaurants() async {
     return _restaurantRepository.getManagedRestaurants();
   }
+
+  Future<void> deleteById(String restaurantId) async {
+    return _restaurantRepository.deleteById(restaurantId);
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front/model/restaurante_detail.dart';
 import '../platos_manage/manage_platos_screen.dart';
 import 'manage_restaurant_bloc.dart';
 
@@ -162,13 +163,61 @@ class _ManageRestaurantUIState extends State<ManageRestaurantUI> {
                           ),
                           ElevatedButton(
                               onPressed: () {},
-                              child: Text("Añadir nuevo plato"))
+                              child: Text("Añadir nuevo plato")),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red.shade700,
+                                  foregroundColor: Colors.white),
+                              onPressed: () =>
+                                  _dialogBuilder(context, state.restaurante!),
+                              child: Text("Eliminar restaurante"))
                         ])),
                   ]),
             );
           case ManageRestaurantStatus.initial:
             return const Center(child: CircularProgressIndicator());
+          case ManageRestaurantStatus.deleted:
+            return const Center(child: Text("A chuparla"));
         }
+      },
+    );
+  }
+
+  Future<void> _dialogBuilder(
+      BuildContext dialogContext, RestauranteDetailResult restaurante) {
+    return showDialog<void>(
+      context: dialogContext,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('¿Eliminar ${restaurante.nombre}?'),
+          content: Text(
+              """¿Estás seguro de querer eliminar ${restaurante.nombre}? Esta acción no se puede deshacer. Por seguridad, debe eliminar los platos antes de poder eliminar el restaurante, le recomendamos desactivar los pedidos antes de optar por borrar definitivamente el restaurante de la aplicación."""),
+          actions: <Widget>[
+            ElevatedButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red.shade700,
+                  foregroundColor: Colors.white),
+              child: const Text('Borrar'),
+              onPressed: () {
+                BlocProvider.of<ManageRestaurantBloc>(dialogContext)
+                  ..add(DeleteRestaurantEvent(restaurante.id!));
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
       },
     );
   }

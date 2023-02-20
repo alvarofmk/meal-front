@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -17,6 +19,7 @@ class ManageRestaurantBloc
     on<RestaurantFetched>(
       _onRestaurantFetched,
     );
+    on<DeleteRestaurantEvent>(_onDeleteRestaurantEvent);
   }
 
   Future<void> _onRestaurantFetched(
@@ -37,6 +40,18 @@ class ManageRestaurantBloc
     } catch (_) {
       emit(state.copyWith(
           id: event.restaurantId, status: ManageRestaurantStatus.failure));
+    }
+  }
+
+  FutureOr<void> _onDeleteRestaurantEvent(
+      DeleteRestaurantEvent event, Emitter<ManageRestaurantState> emit) async {
+    try {
+      await _restaurantService.deleteById(event.restaurantId);
+      return emit(
+        state.copyWith(status: ManageRestaurantStatus.deleted),
+      );
+    } catch (_) {
+      emit(state.copyWith(status: ManageRestaurantStatus.failure));
     }
   }
 }

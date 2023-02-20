@@ -38,4 +38,9 @@ class RestaurantRepository {
     var jsonResponse = await _client.get(url);
     return RestauranteListResult.fromJson(jsonDecode(jsonResponse));
   }
+
+  void deleteById(String restaurantId) async {
+    String url = baseUrl + "${restaurantId}";
+    await _client.delete(url);
+  }
 }

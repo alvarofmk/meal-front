@@ -11,3 +11,8 @@ class RestaurantFetched extends ManageRestaurantEvent {
   RestaurantFetched(this.restaurantId);
   String restaurantId;
 }
+
+class DeleteRestaurantEvent extends ManageRestaurantEvent {
+  DeleteRestaurantEvent(this.restaurantId);
+  String restaurantId;
+}
