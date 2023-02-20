@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
+import 'package:front/login/login_screen.dart';
 import 'package:front/register/register_bloc.dart';
 
 import '../home_screen.dart';
@@ -45,16 +48,9 @@ class _RegisterFormState extends State<RegisterForm> {
                       LoadingDialog.hide(context),
                   onSuccess: (context, state) {
                     LoadingDialog.hide(context);
-                    final registerBloc =
-                        BlocProvider.of<RegisterFormBloc>(context);
                     if (state.stepCompleted == state.lastStep) {
-                      if (registerBloc.registerAsOwner.value) {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (_) => const SuccessScreen()));
-                      } else {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (context) => HomeScreen()));
-                      }
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => SuccessScreen()));
                     }
                   },
                   onFailure: (context, state) {
@@ -200,30 +196,43 @@ class LoadingDialog extends StatelessWidget {
   }
 }
 
-class SuccessScreen extends StatelessWidget {
+class SuccessScreen extends StatefulWidget {
   const SuccessScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SuccessScreen> createState() => _SuccessScreenState();
+}
+
+class _SuccessScreenState extends State<SuccessScreen> {
+  @override
+  void initState() {
+    Timer(Duration(seconds: 3), () {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Icon(Icons.tag_faces, size: 100),
+            const Icon(
+              Icons.check_circle_outline_rounded,
+              size: 100,
+              color: Colors.white,
+            ),
             const SizedBox(height: 10),
             const Text(
-              'Success',
-              style: TextStyle(fontSize: 54, color: Colors.black),
+              'Registrado con éxito',
+              style: TextStyle(fontSize: 24, color: Colors.white),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 10),
-            ElevatedButton.icon(
-              onPressed: () => Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => const RegisterForm())),
-              icon: const Icon(Icons.replay),
-              label: const Text('AGAIN'),
-            ),
           ],
         ),
       ),
