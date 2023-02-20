@@ -17,12 +17,30 @@ class PlatodetailBloc extends Bloc<PlatodetailEvent, PlatodetailState> {
     on<PlatoFetched>(
       _onPlatoFetched,
     );
+    on<RateEvent>(
+      _onRateEvent,
+    );
   }
 
   FutureOr<void> _onPlatoFetched(
       PlatoFetched event, Emitter<PlatodetailState> emit) async {
     try {
       final platoDetail = await _platoService.getDetails(event.platoId);
+      return emit(PlatodetailState(
+          id: event.platoId,
+          plato: platoDetail,
+          status: PlatodetailStatus.success));
+    } catch (_) {
+      emit(PlatodetailState(
+          id: event.platoId, status: PlatodetailStatus.failure));
+    }
+  }
+
+  FutureOr<void> _onRateEvent(
+      RateEvent event, Emitter<PlatodetailState> emit) async {
+    try {
+      final platoDetail =
+          await _platoService.rate(event.platoId, event.nota, event.comentario);
       return emit(PlatodetailState(
           id: event.platoId,
           plato: platoDetail,

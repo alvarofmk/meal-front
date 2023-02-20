@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:front/auth/auth_bloc.dart';
 import 'package:front/login/login_screen.dart';
 import 'package:front/model/plato_detail_result.dart';
@@ -28,6 +29,11 @@ class PlatoUI extends StatefulWidget {
 }
 
 class _PlatoUIState extends State<PlatoUI> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  double rating = 2.5;
+  final comentarioController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PlatodetailBloc, PlatodetailState>(
@@ -37,9 +43,79 @@ class _PlatoUIState extends State<PlatoUI> {
             return const Center(child: Text('Fallo al cargar el plato'));
           case PlatodetailStatus.success:
             return Scaffold(
+                key: _scaffoldKey,
                 appBar: AppBar(
+                  leading: BackButton(),
+                  automaticallyImplyLeading: false,
                   title: Text(state.plato!.nombre!),
                   backgroundColor: Colors.red.shade700,
+                ),
+                drawer: Drawer(
+                  // Add a ListView to the drawer. This ensures the user can scroll
+                  // through the options in the drawer if there isn't enough vertical
+                  // space to fit everything.
+                  child: ListView(
+                    // Important: Remove any padding from the ListView.
+                    padding: EdgeInsets.zero,
+                    children: [
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  bottom: 5, top: 40, left: 20, right: 20),
+                              child: Center(
+                                child: RatingBar.builder(
+                                  initialRating: 3,
+                                  minRating: 1,
+                                  direction: Axis.horizontal,
+                                  allowHalfRating: true,
+                                  itemCount: 5,
+                                  itemPadding:
+                                      EdgeInsets.symmetric(horizontal: 4.0),
+                                  itemBuilder: (context, _) => Icon(
+                                    Icons.star,
+                                    color: Colors.red.shade700,
+                                  ),
+                                  onRatingUpdate: (newRating) {
+                                    rating = newRating;
+                                  },
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(20),
+                              child: TextFormField(
+                                keyboardType: TextInputType.multiline,
+                                maxLines: null,
+                                controller: comentarioController,
+                                decoration: const InputDecoration(
+                                  hintText: 'Dinos tu opinión',
+                                  labelText: 'Comentario',
+                                ),
+                              ),
+                            ),
+                            Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16.0),
+                                child: Center(
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      context.read<PlatodetailBloc>().add(
+                                          RateEvent(state.id, rating,
+                                              comentarioController.text));
+                                      _scaffoldKey.currentState!.closeDrawer();
+                                    },
+                                    child: const Text('Submit'),
+                                  ),
+                                )),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 body: SingleChildScrollView(
                   child: Column(
@@ -112,12 +188,35 @@ class _PlatoUIState extends State<PlatoUI> {
                                 style: TextStyle(fontWeight: FontWeight.w600),
                               ),
                               if (state.plato!.valoracionMedia != null)
-                                Text(
-                                  "${state.plato!.valoracionMedia}",
-                                  style: TextStyle(fontWeight: FontWeight.w600),
-                                ),
+                                if (!state.plato!.valoracionMedia!.isNaN)
+                                  Text(
+                                    "${state.plato!.valoracionMedia}",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w600),
+                                  ),
                             ],
                           )),
+                      if (state.plato!.valoraciones != null)
+                        BlocBuilder<AuthenticationBloc, AuthenticationState>(
+                          builder: (context, authState) {
+                            if (authState is AuthenticationAuthenticated) {
+                              if (!state.plato!.valoraciones!
+                                  .map((v) => v.username)
+                                  .contains(authState.user.email)) {
+                                return Center(
+                                  child: ElevatedButton(
+                                      onPressed: () => _scaffoldKey
+                                          .currentState!
+                                          .openDrawer(),
+                                      child: Text("Valorar")),
+                                );
+                              }
+                            }
+                            return SizedBox(
+                              height: 0,
+                            );
+                          },
+                        ),
                       if (state.plato!.valoraciones != null)
                         Padding(
                           padding: EdgeInsets.all(15),
@@ -149,7 +248,9 @@ class _PlatoUIState extends State<PlatoUI> {
                                 builder: (context, state) {
                                   if (state is AuthenticationAuthenticated) {
                                     return ElevatedButton(
-                                        onPressed: rate(),
+                                        onPressed: () => _scaffoldKey
+                                            .currentState!
+                                            .openDrawer(),
                                         child: Text("Valorar"));
                                   } else if (state
                                       is AuthenticationNotAuthenticated) {

@@ -25,7 +25,7 @@ class ProfileUI extends StatefulWidget {
 }
 
 class _ProfileUIState extends State<ProfileUI> {
-  bool _showAccOptions = true;
+  bool _showAccOptions = false;
 
   @override
   Widget build(BuildContext context) {
@@ -105,22 +105,49 @@ class _ProfileUIState extends State<ProfileUI> {
                   SizedBox(
                     height: 10,
                   ),
-                  OutlinedButton(
-                      onPressed: () {
-                        context.read<AuthenticationBloc>().add(UserLoggedOut());
-                      },
-                      child: Text("Gestionar cuenta")),
-                  SizedBox(
-                    height: 5,
+                  Container(
+                    margin: EdgeInsets.all(5),
+                    child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _showAccOptions = !_showAccOptions;
+                          });
+                        },
+                        child: Text("Gestionar cuenta")),
                   ),
-                  OutlinedButton(
-                      onPressed: () {
-                        context.read<AuthenticationBloc>().add(UserLoggedOut());
-                      },
-                      child: Text(
-                        "Log out",
-                        style: TextStyle(color: Colors.red.shade600),
-                      )),
+                  if (_showAccOptions)
+                    Container(
+                      margin: EdgeInsets.all(5),
+                      child: OutlinedButton(
+                          onPressed: () {},
+                          child: Text(
+                            "Cambiar contraseña",
+                          )),
+                    ),
+                  Visibility(
+                    visible: _showAccOptions,
+                    child: Container(
+                      margin: EdgeInsets.all(5),
+                      child: OutlinedButton(
+                          onPressed: () {},
+                          child: Text(
+                            "Borrar cuenta",
+                          )),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(5),
+                    child: OutlinedButton(
+                        onPressed: () {
+                          context
+                              .read<AuthenticationBloc>()
+                              .add(UserLoggedOut());
+                        },
+                        child: Text(
+                          "Log out",
+                          style: TextStyle(color: Colors.red.shade600),
+                        )),
+                  ),
                   SizedBox(
                     height: 15,
                   ),

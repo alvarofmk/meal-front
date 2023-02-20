@@ -11,3 +11,10 @@ class PlatoFetched extends PlatodetailEvent {
   PlatoFetched(this.platoId);
   String platoId;
 }
+
+class RateEvent extends PlatodetailEvent {
+  RateEvent(this.platoId, this.nota, this.comentario);
+  String platoId;
+  double nota;
+  String? comentario;
+}

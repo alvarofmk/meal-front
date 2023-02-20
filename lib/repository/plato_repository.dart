@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:front/model/plato_detail_result.dart';
+import 'package:front/model/rating.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
@@ -28,6 +29,15 @@ class PlatoRepository {
     String url = baseUrl + platoId;
 
     var jsonResponse = await _client.get(url);
+    return PlatoDetailResult.fromJson(jsonDecode(jsonResponse));
+  }
+
+  Future<PlatoDetailResult> rate(
+      String platoId, double nota, String? comentario) async {
+    String url = baseUrl + "rate/${platoId}";
+
+    var jsonResponse = await _client.post(
+        url, RateRequest(nota: nota, comentario: comentario));
     return PlatoDetailResult.fromJson(jsonDecode(jsonResponse));
   }
 }

@@ -34,7 +34,11 @@ class PlatoDetailResult {
         valoraciones!.add(new Valoracion.fromJson(v));
       });
     }
-    valoracionMedia = json['valoracionMedia'];
+    if (json['valoracionMedia'] is String) {
+      valoracionMedia = null;
+    } else {
+      valoracionMedia = json['valoracionMedia'];
+    }
   }
 
   Map<String, dynamic> toJson() {

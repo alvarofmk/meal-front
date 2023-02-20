@@ -22,4 +22,9 @@ class PlatoService {
   Future<PlatoDetailResult> getDetails(String platoId) async {
     return _platoRepository.getDetails(platoId);
   }
+
+  Future<PlatoDetailResult> rate(
+      String platoId, double nota, String? comentario) async {
+    return _platoRepository.rate(platoId, nota, comentario);
+  }
 }
