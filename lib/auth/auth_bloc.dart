@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -17,6 +19,7 @@ class AuthenticationBloc extends Bloc<AuthEvent, AuthenticationState> {
     on<AppLoaded>(_onAppLoaded);
     on<UserLoggedIn>(_onUserLoggedIn);
     on<UserLoggedOut>(_onUserLoggedOut);
+    on<DeleteAccountEvent>(_onDeleteAccountEvent);
   }
 
   _onAppLoaded(
@@ -57,6 +60,17 @@ class AuthenticationBloc extends Bloc<AuthEvent, AuthenticationState> {
     UserLoggedOut event,
     Emitter<AuthenticationState> emit,
   ) async {
+    await _authenticationService.signOut();
+    emit(AuthenticationNotAuthenticated());
+  }
+
+  FutureOr<void> _onDeleteAccountEvent(
+      DeleteAccountEvent event, Emitter<AuthenticationState> emit) async {
+    try {
+      await _authenticationService.deleteAccount();
+    } on Exception catch (e) {
+      // TODO
+    }
     await _authenticationService.signOut();
     emit(AuthenticationNotAuthenticated());
   }

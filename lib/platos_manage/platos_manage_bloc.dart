@@ -39,17 +39,14 @@ class PlatosManageBloc extends Bloc<PlatosManageEvent, PlatosManageState> {
         );
       }
       final platos = await _platoService.getByRestaurant(
-          state.restaurantId, state.currentPage + 1);
-      platos.contenido!.isEmpty
-          ? emit(state.copyWith(hasReachedMax: true))
-          : emit(
-              state.copyWith(
-                  status: PlatosManageStatus.success,
-                  platos: List.of(state.platos)..addAll(platos.contenido!),
-                  hasReachedMax:
-                      platos.paginaActual! + 1 >= platos.numeroPaginas!,
-                  currentPage: state.currentPage + 1),
-            );
+          state.restaurantId, state.currentPage);
+      emit(
+        state.copyWith(
+            status: PlatosManageStatus.success,
+            platos: List.of(state.platos)..addAll(platos.contenido!),
+            hasReachedMax: platos.paginaActual! + 1 >= platos.numeroPaginas!,
+            currentPage: state.currentPage + 1),
+      );
     } catch (_) {
       emit(state.copyWith(status: PlatosManageStatus.failure));
     }

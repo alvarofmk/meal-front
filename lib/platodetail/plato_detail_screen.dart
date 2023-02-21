@@ -128,6 +128,7 @@ class _PlatoUIState extends State<PlatoUI> {
                       Image.network(
                         imgBase + state.plato!.id! + imgSuffix,
                         height: 300,
+                        fit: BoxFit.cover,
                       ),
                       Padding(
                         padding: EdgeInsets.all(15),

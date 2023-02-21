@@ -5,6 +5,8 @@ import 'package:front/model/RestauranteListResult.dart';
 import 'package:front/profile/profile_bloc.dart';
 import 'package:front/restaurant_form/restaurant_form_screen.dart';
 
+import '../model/login_model.dart';
+import '../password_change/password_change_screen.dart';
 import '../restaurant_manage/manage_restaurant_screen.dart';
 
 const String imgBase = "http://localhost:8080/restaurante/";
@@ -29,6 +31,7 @@ class ProfileUI extends StatefulWidget {
 
 class _ProfileUIState extends State<ProfileUI> {
   bool _showAccOptions = false;
+  bool _canDeleteAccount = false;
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +39,20 @@ class _ProfileUIState extends State<ProfileUI> {
       builder: (context, state) {
         switch (state.status) {
           case ProfileStatus.failure:
-            return const Center(child: Text('Fallo al cargar el usuario'));
+            return Center(
+                child: Column(
+              children: [
+                Text('Fallo al cargar los restaurantes'),
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<AuthenticationBloc>().add(UserLoggedOut());
+                  },
+                  child: Text("Reintentar"),
+                )
+              ],
+            ));
           case ProfileStatus.standard:
+            _canDeleteAccount = true;
             return SingleChildScrollView(
                 child: Padding(
               padding: EdgeInsets.all(20),
@@ -62,7 +77,11 @@ class _ProfileUIState extends State<ProfileUI> {
                     Container(
                       margin: EdgeInsets.all(5),
                       child: OutlinedButton(
-                          onPressed: () {},
+                          onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      PassWordChangeScreen())),
                           child: Text(
                             "Cambiar contraseña",
                             style: TextStyle(color: Colors.red.shade700),
@@ -75,7 +94,7 @@ class _ProfileUIState extends State<ProfileUI> {
                       child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
                               backgroundColor: Colors.red.shade700),
-                          onPressed: () {},
+                          onPressed: () => _dialogBuilder(context, state.user!),
                           child: Text(
                             "Borrar cuenta",
                           )),
@@ -99,6 +118,8 @@ class _ProfileUIState extends State<ProfileUI> {
               ),
             ));
           case ProfileStatus.owner:
+            if (state.restaurantes != null)
+              _canDeleteAccount = state.restaurantes!.isEmpty;
             return SingleChildScrollView(
                 child: Padding(
               padding: EdgeInsets.all(20),
@@ -126,7 +147,11 @@ class _ProfileUIState extends State<ProfileUI> {
                     Container(
                       margin: EdgeInsets.all(5),
                       child: OutlinedButton(
-                          onPressed: () {},
+                          onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      PassWordChangeScreen())),
                           child: Text(
                             "Cambiar contraseña",
                             style: TextStyle(color: Colors.red.shade700),
@@ -139,7 +164,7 @@ class _ProfileUIState extends State<ProfileUI> {
                       child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
                               backgroundColor: Colors.red.shade700),
-                          onPressed: () {},
+                          onPressed: () => _dialogBuilder(context, state.user!),
                           child: Text(
                             "Borrar cuenta",
                           )),
@@ -173,7 +198,42 @@ class _ProfileUIState extends State<ProfileUI> {
     );
   }
 
-  rate() {}
+  Future<void> _dialogBuilder(BuildContext dialogContext, User user) {
+    return showDialog<void>(
+      context: dialogContext,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('¿Eliminar cuenta?'),
+          content: Text(
+              """¿Estás seguro de querer eliminar su cuenta? Esta acción no se puede deshacer. Por seguridad, si usted gestiona algún restaurante elimine o desactive sus resataurantes antes de eliminar la cuenta. Le recomendamos desactivar los pedidos antes de optar por borrar definitivamente su cuenta."""),
+          actions: <Widget>[
+            ElevatedButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red.shade700,
+                  foregroundColor: Colors.white),
+              child: const Text('Borrar'),
+              onPressed: _canDeleteAccount
+                  ? () {
+                      BlocProvider.of<AuthenticationBloc>(dialogContext)
+                        ..add(DeleteAccountEvent());
+                      Navigator.of(context).pop();
+                    }
+                  : null,
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
 
 class OwnerSection extends StatelessWidget {

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front/model/restaurante_detail.dart';
+import 'package:front/restaurant_form/restaurant_form_screen.dart';
 import '../home_screen.dart';
 import '../platos_manage/manage_platos_screen.dart';
 import 'manage_restaurant_bloc.dart';
@@ -154,7 +155,17 @@ class _ManageRestaurantUIState extends State<ManageRestaurantUI> {
                   SizedBox(
                     height: 5,
                   ),
-                  ElevatedButton(onPressed: () {}, child: Text("Editar datos")),
+                  Divider(),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  ElevatedButton(
+                      onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  RestaurantForm.edit(state.restaurante))),
+                      child: Text("Editar datos")),
                   SizedBox(
                     height: 5,
                   ),

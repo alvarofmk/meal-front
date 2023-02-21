@@ -38,9 +38,7 @@ class LoginScreen extends StatelessWidget {
                 ));
               }
               if (state is AuthenticationAuthenticated) {
-                return Center(
-                  child: Text("Hola " + state.user.name),
-                );
+                Navigator.of(context).pop();
               }
               return Center(
                 child: CircularProgressIndicator(

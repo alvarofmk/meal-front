@@ -45,8 +45,18 @@ class _MainBodyState extends State<MainBody> {
       builder: (context, state) {
         switch (state.status) {
           case LandingStatus.failure:
-            return const Center(
-                child: Text('Fallo al cargar los restaurantes'));
+            return Center(
+                child: Column(
+              children: [
+                Text('Fallo al cargar los restaurantes'),
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<LandingBloc>().add(RestaurantsFetched());
+                  },
+                  child: Text("Reintentar"),
+                )
+              ],
+            ));
           case LandingStatus.success:
             if (state.restaurantes.isEmpty) {
               return const Center(child: Text('No se encuentran restaurantes'));

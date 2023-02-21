@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:front/model/change_password.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
@@ -53,5 +54,18 @@ class AuthenticationRepository {
             name: name,
             verifyPassword: verifyPassword));
     return RegisterResponse.fromJson(jsonDecode(jsonResponse));
+  }
+
+  Future<LoginResponse> changePassword(
+      ChangePasswordRequest changePasswordRequest) async {
+    String url = "/user/changePassword";
+
+    var jsonResponse = await _client.put(url, changePasswordRequest);
+    return LoginResponse.fromJson(jsonDecode(jsonResponse));
+  }
+
+  Future<void> deleteAccount() async {
+    String url = "/user/deleteAccount";
+    await _client.delete(url);
   }
 }

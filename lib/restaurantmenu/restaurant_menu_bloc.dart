@@ -45,26 +45,34 @@ class RestaurantMenuBloc
     RestaurantFetched event,
     Emitter<RestaurantMenuState> emit,
   ) async {
+    var restauranteDetails;
+    var platos;
     try {
       if (state.status == RestaurantMenuStatus.initial) {
-        final restauranteDetails =
+        restauranteDetails =
             await _restaurantService.getRestaurantDetails(event.restaurantId);
-        final platos =
-            await _platoService.getByRestaurant(event.restaurantId, 0);
-        return emit(
-          state.copyWith(
-              id: event.restaurantId,
-              status: RestaurantMenuStatus.success,
-              restaurante: restauranteDetails,
-              platos: platos.contenido,
-              hasReachedMax: platos.paginaActual! + 1 >= platos.numeroPaginas!,
-              currentPage: 0),
-        );
       }
     } catch (_) {
-      emit(state.copyWith(
+      return emit(state.copyWith(
           id: event.restaurantId, status: RestaurantMenuStatus.failure));
     }
+    try {
+      platos = await _platoService.getByRestaurant(event.restaurantId, 0);
+    } catch (_) {
+      return emit(state.copyWith(
+          restaurante: restauranteDetails,
+          id: event.restaurantId,
+          status: RestaurantMenuStatus.noneFound));
+    }
+    return emit(
+      state.copyWith(
+          id: event.restaurantId,
+          status: RestaurantMenuStatus.success,
+          restaurante: restauranteDetails,
+          platos: platos.contenido,
+          hasReachedMax: platos.paginaActual! + 1 >= platos.numeroPaginas!,
+          currentPage: 0),
+    );
   }
 
   FutureOr<void> _onNextPlatosFetched(

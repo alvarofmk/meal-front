@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:front/model/change_password.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
@@ -16,6 +17,8 @@ abstract class AuthenticationService {
   Future<RegisterResponse> registerOwner(String username, String password,
       String verifyPassword, String email, String name);
   Future<void> signOut();
+  Future<void> changePassWord(ChangePasswordRequest changePasswordRequest);
+  Future<void> deleteAccount();
 }
 
 @Order(2)
@@ -78,5 +81,18 @@ class JwtAuthenticationService extends AuthenticationService {
     RegisterResponse response = await _authenticationRepository.registerOwner(
         username, password, verifyPassword, email, name);
     return response;
+  }
+
+  @override
+  Future<LoginResponse> changePassWord(
+      ChangePasswordRequest changePasswordRequest) async {
+    LoginResponse response =
+        await _authenticationRepository.changePassword(changePasswordRequest);
+    return response;
+  }
+
+  @override
+  Future<void> deleteAccount() async {
+    await _authenticationRepository.deleteAccount();
   }
 }
