@@ -23,8 +23,13 @@ void main() {
 class App extends MaterialApp {
   App({super.key})
       : super(
+            debugShowCheckedModeBanner: false,
             home: const HomeScreen(),
             theme: ThemeData(
+                sliderTheme: SliderThemeData(
+                  showValueIndicator: ShowValueIndicator.always,
+                  trackHeight: 1,
+                ),
                 colorScheme: ColorScheme(
                     brightness: Brightness.light,
                     primary: Colors.white,

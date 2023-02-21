@@ -36,6 +36,9 @@ class RestaurantMenuBloc
     on<NextPlatosFetched>(
       _onNextPlatosFetched,
     );
+    on<SearchPlatosEvent>(
+      _onSearchPlatosEvent,
+    );
   }
 
   Future<void> _onRestaurantFetched(
@@ -78,6 +81,28 @@ class RestaurantMenuBloc
                   hasReachedMax: false,
                   currentPage: state.currentPage + 1),
             );
+    } catch (_) {
+      emit(state.copyWith(status: RestaurantMenuStatus.failure));
+    }
+  }
+
+  FutureOr<void> _onSearchPlatosEvent(
+      SearchPlatosEvent event, Emitter<RestaurantMenuState> emit) async {
+    try {
+      String searchString = "search=";
+      if (event.busqueda != null) searchString += "nombre:${event.busqueda!},";
+      if (event.maxPriceValue != null)
+        searchString += "precio<${event.maxPriceValue!},";
+      if (event.minPriceValue != null)
+        searchString += "precio>${event.minPriceValue!},";
+      if (event.noGluten != null)
+        searchString += "sinGluten:${event.noGluten! ? 1 : 0},";
+      final platos =
+          await _platoService.searchByRestaurant(state.id, searchString, 0);
+      return emit(
+        state.copyWith(
+            platos: platos.contenido, hasReachedMax: false, currentPage: 1),
+      );
     } catch (_) {
       emit(state.copyWith(status: RestaurantMenuStatus.failure));
     }

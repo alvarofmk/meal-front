@@ -13,3 +13,12 @@ class RestaurantFetched extends RestaurantMenuEvent {
 }
 
 class NextPlatosFetched extends RestaurantMenuEvent {}
+
+class SearchPlatosEvent extends RestaurantMenuEvent {
+  SearchPlatosEvent(
+      this.busqueda, this.minPriceValue, this.maxPriceValue, this.noGluten);
+  String? busqueda;
+  double? minPriceValue;
+  double? maxPriceValue;
+  bool? noGluten;
+}

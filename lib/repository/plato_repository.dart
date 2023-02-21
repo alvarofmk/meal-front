@@ -18,8 +18,10 @@ class PlatoRepository {
     _client = GetIt.I.get<RestClient>();
   }
 
-  Future<PlatoListResult> getByRestaurant(String restaurantId, int page) async {
-    String url = baseUrl + "restaurante/${restaurantId}?page=${page}";
+  Future<PlatoListResult> getByRestaurant(
+      String restaurantId, int page, String searchString) async {
+    String url =
+        baseUrl + "restaurante/${restaurantId}?page=${page}&${searchString}";
 
     var jsonResponse = await _client.get(url);
     return PlatoListResult.fromJson(jsonDecode(jsonResponse));

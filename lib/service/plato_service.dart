@@ -16,7 +16,7 @@ class PlatoService {
   }
 
   Future<PlatoListResult> getByRestaurant(String restaurantId, int page) async {
-    return _platoRepository.getByRestaurant(restaurantId, page);
+    return _platoRepository.getByRestaurant(restaurantId, page, "search=");
   }
 
   Future<PlatoDetailResult> getDetails(String platoId) async {
@@ -30,5 +30,10 @@ class PlatoService {
 
   Future<void> deleteById(String platoId) async {
     return _platoRepository.deleteById(platoId);
+  }
+
+  Future<PlatoListResult> searchByRestaurant(
+      String id, String searchString, int page) async {
+    return _platoRepository.getByRestaurant(id, page, searchString);
   }
 }

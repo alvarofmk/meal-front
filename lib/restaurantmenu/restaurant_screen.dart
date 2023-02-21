@@ -33,6 +33,14 @@ class RestaurantUI extends StatefulWidget {
 
 class _RestaurantUIState extends State<RestaurantUI> {
   final _scrollController = ScrollController();
+  bool showFilters = false;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  double initMin = 0.1;
+  double initMax = 20.0;
+  double? _minPriceValue = null;
+  double? _maxPriceValue = null;
+  bool? _noGluten = null;
+  String? _busqueda = null;
 
   @override
   void initState() {
@@ -79,6 +87,127 @@ class _RestaurantUIState extends State<RestaurantUI> {
                                 fontWeight: FontWeight.w300, fontSize: 12),
                           )
                         ])),
+                    Padding(
+                      padding: EdgeInsets.only(left: 20, right: 20),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Divider(),
+                          ),
+                          IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  showFilters = !showFilters;
+                                });
+                              },
+                              icon: Icon(Icons.filter_list))
+                        ],
+                      ),
+                    ),
+                    if (showFilters)
+                      Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Container(
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                ListTile(
+                                    dense: true,
+                                    visualDensity: VisualDensity(vertical: -3),
+                                    title: TextFormField(
+                                      decoration: const InputDecoration(
+                                        hintText: 'Hamburguesa con queso...',
+                                      ),
+                                      onChanged: (String value) {
+                                        setState(() {
+                                          _busqueda = value;
+                                        });
+                                      },
+                                    ),
+                                    leading: Text("Producto")),
+                                ListTile(
+                                    dense: true,
+                                    visualDensity: VisualDensity(vertical: -3),
+                                    title: Slider(
+                                      activeColor: Colors.red.shade800,
+                                      inactiveColor: Colors.red.shade700,
+                                      min: 0.0,
+                                      max: _maxPriceValue ?? 30.0,
+                                      value: _minPriceValue ?? initMin,
+                                      label: _minPriceValue != null
+                                          ? _minPriceValue!.round().toString()
+                                          : "",
+                                      onChanged: (double value) {
+                                        setState(() {
+                                          _minPriceValue = value;
+                                        });
+                                      },
+                                    ),
+                                    leading: Text("Precio min")),
+                                ListTile(
+                                    dense: true,
+                                    visualDensity: VisualDensity(
+                                        vertical: -3, horizontal: -3),
+                                    title: Slider(
+                                      activeColor: Colors.red.shade800,
+                                      inactiveColor: Colors.red.shade700,
+                                      min: _minPriceValue ?? 0.0,
+                                      max: 30.0,
+                                      value: _maxPriceValue ?? initMax,
+                                      label: _maxPriceValue != null
+                                          ? _maxPriceValue!.round().toString()
+                                          : "",
+                                      onChanged: (double value) {
+                                        setState(() {
+                                          _maxPriceValue = value;
+                                        });
+                                      },
+                                    ),
+                                    leading: Text("Precio max")),
+                                ListTile(
+                                  dense: true,
+                                  visualDensity: VisualDensity(
+                                      vertical: -3, horizontal: -3),
+                                  title: const Text('Sin gluten'),
+                                  leading: Checkbox(
+                                    value:
+                                        _noGluten != null ? _noGluten! : false,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _noGluten = value!;
+                                      });
+                                    },
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 16.0),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      context.read<RestaurantMenuBloc>().add(
+                                          SearchPlatosEvent(
+                                              _busqueda,
+                                              _minPriceValue,
+                                              _maxPriceValue,
+                                              _noGluten));
+                                      setState(() {
+                                        showFilters = !showFilters;
+                                        _minPriceValue = null;
+                                        _maxPriceValue = null;
+                                        _noGluten = null;
+                                        _busqueda = null;
+                                      });
+                                    },
+                                    child: const Text('Buscar'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                     Expanded(
                         child: ListView.builder(
                       shrinkWrap: true,
