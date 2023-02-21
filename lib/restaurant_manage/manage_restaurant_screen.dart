@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front/model/restaurante_detail.dart';
+import '../home_screen.dart';
 import '../platos_manage/manage_platos_screen.dart';
 import 'manage_restaurant_bloc.dart';
 
@@ -37,152 +40,149 @@ class _ManageRestaurantUIState extends State<ManageRestaurantUI> {
           case ManageRestaurantStatus.failure:
             return const Center(child: Text('Fallo al cargar el restaurante'));
           case ManageRestaurantStatus.success:
-            return Scaffold(
-              appBar: AppBar(
-                title: Text(state.restaurante!.nombre!),
-                backgroundColor: Theme.of(context).colorScheme.onSecondary,
-                foregroundColor: Theme.of(context).colorScheme.primary,
-              ),
-              body: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  verticalDirection: VerticalDirection.down,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Stack(alignment: Alignment.bottomCenter, children: <Widget>[
-                      Image.network(
-                        imgBase + state.restaurante!.id! + imgSuffix,
-                      ),
-                      Positioned(
-                          right: 15,
-                          bottom: 15,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.red.shade700,
-                            child: IconButton(
-                              color: Colors.white,
-                              onPressed: () {},
-                              icon: Icon(Icons.edit),
-                            ),
-                          )),
-                    ]),
-                    Padding(
-                        padding: EdgeInsets.all(15),
-                        child: Column(children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                flex: 4,
-                                child: Text("Nombre"),
-                              ),
-                              Expanded(
-                                  flex: 10,
-                                  child: Text(
-                                    state.restaurante!.nombre!,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w300,
-                                        fontSize: 12),
-                                  ))
-                            ],
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                flex: 4,
-                                child: Text("Descripción"),
-                              ),
-                              Expanded(
-                                  flex: 10,
-                                  child: Text(
-                                    state.restaurante!.descripcion!,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w300,
-                                        fontSize: 12),
-                                  ))
-                            ],
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                flex: 4,
-                                child: Text("Hora apertura"),
-                              ),
-                              Expanded(
-                                  flex: 10,
-                                  child: Text(
-                                    state.restaurante!.apertura!,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w300,
-                                        fontSize: 12),
-                                  ))
-                            ],
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                flex: 4,
-                                child: Text("Hora cierre"),
-                              ),
-                              Expanded(
-                                  flex: 10,
-                                  child: Text(
-                                    state.restaurante!.cierre!,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w300,
-                                        fontSize: 12),
-                                  ))
-                            ],
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          ElevatedButton(
-                              onPressed: () {}, child: Text("Editar datos")),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          ElevatedButton(
-                              onPressed: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ManagePlatosScreen(
-                                            restaurantId:
-                                                state.restaurante!.id!,
-                                          ))),
-                              child: Text("Gestionar platos")),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          ElevatedButton(
-                              onPressed: () {},
-                              child: Text("Añadir nuevo plato")),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.red.shade700,
-                                  foregroundColor: Colors.white),
-                              onPressed: () =>
-                                  _dialogBuilder(context, state.restaurante!),
-                              child: Text("Eliminar restaurante"))
-                        ])),
-                  ]),
-            );
+            return _buildScreen(state);
           case ManageRestaurantStatus.initial:
             return const Center(child: CircularProgressIndicator());
           case ManageRestaurantStatus.deleted:
-            return const Center(child: Text("A chuparla"));
+            return const DeletedScreen();
         }
       },
+    );
+  }
+
+  Scaffold _buildScreen(ManageRestaurantState state) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(state.restaurante!.nombre!),
+        backgroundColor: Theme.of(context).colorScheme.onSecondary,
+        foregroundColor: Theme.of(context).colorScheme.primary,
+      ),
+      body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          verticalDirection: VerticalDirection.down,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(alignment: Alignment.bottomCenter, children: <Widget>[
+              Image.network(
+                imgBase + state.restaurante!.id! + imgSuffix,
+              ),
+              Positioned(
+                  right: 15,
+                  bottom: 15,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.red.shade700,
+                    child: IconButton(
+                      color: Colors.white,
+                      onPressed: () {},
+                      icon: Icon(Icons.edit),
+                    ),
+                  )),
+            ]),
+            Padding(
+                padding: EdgeInsets.all(15),
+                child: Column(children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 4,
+                        child: Text("Nombre"),
+                      ),
+                      Expanded(
+                          flex: 10,
+                          child: Text(
+                            state.restaurante!.nombre!,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w300, fontSize: 12),
+                          ))
+                    ],
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 4,
+                        child: Text("Descripción"),
+                      ),
+                      Expanded(
+                          flex: 10,
+                          child: Text(
+                            state.restaurante!.descripcion!,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w300, fontSize: 12),
+                          ))
+                    ],
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 4,
+                        child: Text("Hora apertura"),
+                      ),
+                      Expanded(
+                          flex: 10,
+                          child: Text(
+                            state.restaurante!.apertura!,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w300, fontSize: 12),
+                          ))
+                    ],
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 4,
+                        child: Text("Hora cierre"),
+                      ),
+                      Expanded(
+                          flex: 10,
+                          child: Text(
+                            state.restaurante!.cierre!,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w300, fontSize: 12),
+                          ))
+                    ],
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  ElevatedButton(onPressed: () {}, child: Text("Editar datos")),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  ElevatedButton(
+                      onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ManagePlatosScreen(
+                                    restaurantId: state.restaurante!.id!,
+                                  ))),
+                      child: Text("Gestionar platos")),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {}, child: Text("Añadir nuevo plato")),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red.shade700,
+                          foregroundColor: Colors.white),
+                      onPressed: () =>
+                          _dialogBuilder(context, state.restaurante!),
+                      child: Text("Eliminar restaurante"))
+                ])),
+          ]),
     );
   }
 
@@ -219,6 +219,50 @@ class _ManageRestaurantUIState extends State<ManageRestaurantUI> {
           ],
         );
       },
+    );
+  }
+}
+
+class DeletedScreen extends StatefulWidget {
+  const DeletedScreen({Key? key}) : super(key: key);
+
+  @override
+  State<DeletedScreen> createState() => _DeletedScreenState();
+}
+
+class _DeletedScreenState extends State<DeletedScreen> {
+  @override
+  void initState() {
+    Timer(Duration(seconds: 3), () {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Icon(
+              Icons.check_circle_outline_rounded,
+              size: 100,
+              color: Colors.white,
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'Borrado con éxito',
+              style: TextStyle(fontSize: 24, color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 10),
+          ],
+        ),
+      ),
     );
   }
 }
