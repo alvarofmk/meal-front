@@ -25,7 +25,6 @@ class AuthenticationBloc extends Bloc<AuthEvent, AuthenticationState> {
   ) async {
     emit(AuthenticationLoading());
     try {
-      _authenticationService.signOut();
       final currentUser = await _authenticationService.getCurrentUser();
 
       if (currentUser != null) {

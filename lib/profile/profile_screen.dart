@@ -65,6 +65,7 @@ class _ProfileUIState extends State<ProfileUI> {
                           onPressed: () {},
                           child: Text(
                             "Cambiar contraseña",
+                            style: TextStyle(color: Colors.red.shade700),
                           )),
                     ),
                   Visibility(
@@ -72,6 +73,8 @@ class _ProfileUIState extends State<ProfileUI> {
                     child: Container(
                       margin: EdgeInsets.all(5),
                       child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                              backgroundColor: Colors.red.shade700),
                           onPressed: () {},
                           child: Text(
                             "Borrar cuenta",
@@ -81,6 +84,8 @@ class _ProfileUIState extends State<ProfileUI> {
                   Container(
                     margin: EdgeInsets.all(5),
                     child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                            backgroundColor: Colors.red.shade700),
                         onPressed: () {
                           context
                               .read<AuthenticationBloc>()
@@ -88,7 +93,6 @@ class _ProfileUIState extends State<ProfileUI> {
                         },
                         child: Text(
                           "Log out",
-                          style: TextStyle(color: Colors.red.shade600),
                         )),
                   ),
                 ]),
@@ -125,6 +129,7 @@ class _ProfileUIState extends State<ProfileUI> {
                           onPressed: () {},
                           child: Text(
                             "Cambiar contraseña",
+                            style: TextStyle(color: Colors.red.shade700),
                           )),
                     ),
                   Visibility(
@@ -132,6 +137,8 @@ class _ProfileUIState extends State<ProfileUI> {
                     child: Container(
                       margin: EdgeInsets.all(5),
                       child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                              backgroundColor: Colors.red.shade700),
                           onPressed: () {},
                           child: Text(
                             "Borrar cuenta",
@@ -141,6 +148,8 @@ class _ProfileUIState extends State<ProfileUI> {
                   Container(
                     margin: EdgeInsets.all(5),
                     child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                            backgroundColor: Colors.red.shade700),
                         onPressed: () {
                           context
                               .read<AuthenticationBloc>()
@@ -148,7 +157,6 @@ class _ProfileUIState extends State<ProfileUI> {
                         },
                         child: Text(
                           "Log out",
-                          style: TextStyle(color: Colors.red.shade600),
                         )),
                   ),
                   SizedBox(
