@@ -46,7 +46,15 @@ class _ManagePlatosScreenUIState extends State<ManagePlatosScreenUI> {
       builder: (context, state) {
         switch (state.status) {
           case PlatosManageStatus.failure:
-            return const Center(child: Text('Fallo al cargar los platos'));
+            return Scaffold(
+                appBar: AppBar(
+                  title: Text("Platos"),
+                  backgroundColor: Theme.of(context).colorScheme.onSecondary,
+                  foregroundColor: Theme.of(context).colorScheme.primary,
+                ),
+                body: Center(
+                  child: Text("Parece que no hemos encontrado ningún plato."),
+                ));
           case PlatosManageStatus.success:
             return Scaffold(
               appBar: AppBar(

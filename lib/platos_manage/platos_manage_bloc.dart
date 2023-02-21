@@ -34,7 +34,7 @@ class PlatosManageBloc extends Bloc<PlatosManageEvent, PlatosManageState> {
               restaurantId: event.restaurantId,
               status: PlatosManageStatus.success,
               platos: platos.contenido!,
-              hasReachedMax: false,
+              hasReachedMax: platos.paginaActual! + 1 >= platos.numeroPaginas!,
               currentPage: state.currentPage + 1),
         );
       }
@@ -46,7 +46,8 @@ class PlatosManageBloc extends Bloc<PlatosManageEvent, PlatosManageState> {
               state.copyWith(
                   status: PlatosManageStatus.success,
                   platos: List.of(state.platos)..addAll(platos.contenido!),
-                  hasReachedMax: false,
+                  hasReachedMax:
+                      platos.paginaActual! + 1 >= platos.numeroPaginas!,
                   currentPage: state.currentPage + 1),
             );
     } catch (_) {
@@ -64,7 +65,7 @@ class PlatosManageBloc extends Bloc<PlatosManageEvent, PlatosManageState> {
             restaurantId: state.restaurantId,
             status: PlatosManageStatus.success,
             platos: platos.contenido!,
-            hasReachedMax: false,
+            hasReachedMax: platos.paginaActual! + 1 >= platos.numeroPaginas!,
             currentPage: 1),
       );
     } catch (_) {

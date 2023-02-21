@@ -47,22 +47,22 @@ class LandingBloc extends Bloc<LandingEvent, LandingState> {
           state.copyWith(
               status: LandingStatus.success,
               restaurantes: restaurantes.contenido,
-              hasReachedMax: false,
+              hasReachedMax:
+                  restaurantes.paginaActual! + 1 >= restaurantes.numeroPaginas!,
               currentPage: 0),
         );
       }
       final restaurantes =
           await _restaurantService.getRestaurantPage(state.currentPage + 1);
-      restaurantes.contenido!.isEmpty
-          ? emit(state.copyWith(hasReachedMax: true))
-          : emit(
-              state.copyWith(
-                  status: LandingStatus.success,
-                  restaurantes: List.of(state.restaurantes)
-                    ..addAll(restaurantes.contenido!),
-                  hasReachedMax: false,
-                  currentPage: state.currentPage + 1),
-            );
+      emit(
+        state.copyWith(
+            status: LandingStatus.success,
+            restaurantes: List.of(state.restaurantes)
+              ..addAll(restaurantes.contenido!),
+            hasReachedMax:
+                restaurantes.paginaActual! + 1 >= restaurantes.numeroPaginas!,
+            currentPage: state.currentPage + 1),
+      );
     } catch (_) {
       emit(state.copyWith(status: LandingStatus.failure));
     }

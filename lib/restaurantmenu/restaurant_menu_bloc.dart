@@ -57,7 +57,7 @@ class RestaurantMenuBloc
               status: RestaurantMenuStatus.success,
               restaurante: restauranteDetails,
               platos: platos.contenido,
-              hasReachedMax: false,
+              hasReachedMax: platos.paginaActual! + 1 >= platos.numeroPaginas!,
               currentPage: 0),
         );
       }
@@ -69,6 +69,7 @@ class RestaurantMenuBloc
 
   FutureOr<void> _onNextPlatosFetched(
       NextPlatosFetched event, Emitter<RestaurantMenuState> emit) async {
+    if (state.hasReachedMax) return;
     try {
       final platos =
           await _platoService.getByRestaurant(state.id, state.currentPage + 1);
@@ -78,11 +79,12 @@ class RestaurantMenuBloc
               state.copyWith(
                   status: RestaurantMenuStatus.success,
                   platos: List.of(state.platos)..addAll(platos.contenido!),
-                  hasReachedMax: false,
+                  hasReachedMax:
+                      platos.paginaActual! + 1 >= platos.numeroPaginas!,
                   currentPage: state.currentPage + 1),
             );
     } catch (_) {
-      emit(state.copyWith(status: RestaurantMenuStatus.failure));
+      emit(state.copyWith(status: RestaurantMenuStatus.noneFound));
     }
   }
 
@@ -101,10 +103,13 @@ class RestaurantMenuBloc
           await _platoService.searchByRestaurant(state.id, searchString, 0);
       return emit(
         state.copyWith(
-            platos: platos.contenido, hasReachedMax: false, currentPage: 1),
+            status: RestaurantMenuStatus.success,
+            platos: platos.contenido,
+            hasReachedMax: platos.paginaActual! + 1 >= platos.numeroPaginas!,
+            currentPage: 1),
       );
     } catch (_) {
-      emit(state.copyWith(status: RestaurantMenuStatus.failure));
+      emit(state.copyWith(status: RestaurantMenuStatus.noneFound));
     }
   }
 }

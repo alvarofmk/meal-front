@@ -2,11 +2,7 @@ part of 'restaurant_menu_bloc.dart';
 
 class RestaurantMenuInitial extends RestaurantMenuState {}
 
-enum RestaurantMenuStatus {
-  initial,
-  success,
-  failure,
-}
+enum RestaurantMenuStatus { initial, success, failure, noneFound }
 
 class RestaurantMenuState extends Equatable {
   const RestaurantMenuState({
