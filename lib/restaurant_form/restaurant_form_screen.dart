@@ -12,26 +12,17 @@ import '../photo_bloc/photo_bloc.dart';
 
 class RestaurantForm extends StatefulWidget {
   RestaurantForm({Key? key}) : super(key: key);
-  RestaurantForm.edit(this.restauranteToEdit, {Key? key}) : super(key: key);
-
-  RestauranteDetailResult? restauranteToEdit;
 
   @override
-  State<RestaurantForm> createState() =>
-      _RestaurantFormState(restauranteToEdit);
+  State<RestaurantForm> createState() => _RestaurantFormState();
 }
 
 class _RestaurantFormState extends State<RestaurantForm> {
   final picker = ImagePicker();
   late File _image;
-  RestauranteDetailResult? restauranteToEdit;
-  bool editing = false;
-
-  _RestaurantFormState(this.restauranteToEdit);
 
   @override
   Widget build(BuildContext context) {
-    editing = restauranteToEdit != null;
     return BlocProvider(
       create: (context) => RestaurantFormBloc(),
       child: Builder(
@@ -110,26 +101,25 @@ class _RestaurantFormState extends State<RestaurantForm> {
                                     prefixIcon: Icon(Icons.time_to_leave),
                                   ),
                                 ),
-                                if (!editing)
-                                  GestureDetector(
-                                    onTap: () {
-                                      selectPhoto(ImageSource.gallery);
+                                GestureDetector(
+                                  onTap: () {
+                                    selectPhoto(ImageSource.gallery);
+                                  },
+                                  child: BlocBuilder<PhotoBloc, PhotoState>(
+                                    bloc: photoBloc,
+                                    builder: (context, state) {
+                                      return Container(
+                                        height: 150,
+                                        width: 150,
+                                        child: state is PhotoInitial
+                                            ? Image.asset(
+                                                'assets/default-restaurant.jpg')
+                                            : Image.file(
+                                                (state as PhotoSet).photo),
+                                      );
                                     },
-                                    child: BlocBuilder<PhotoBloc, PhotoState>(
-                                      bloc: photoBloc,
-                                      builder: (context, state) {
-                                        return Container(
-                                          height: 150,
-                                          width: 150,
-                                          child: state is PhotoInitial
-                                              ? Image.asset(
-                                                  'assets/default-restaurant.jpg')
-                                              : Image.file(
-                                                  (state as PhotoSet).photo),
-                                        );
-                                      },
-                                    ),
                                   ),
+                                ),
                                 ElevatedButton(
                                   onPressed: formBloc.submit,
                                   child: const Text('SUBMIT'),

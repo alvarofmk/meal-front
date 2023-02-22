@@ -1,4 +1,6 @@
-part of 'manage_restaurant_bloc.dart';
+import 'package:equatable/equatable.dart';
+
+import '../model/restaurante_request.dart';
 
 abstract class ManageRestaurantEvent extends Equatable {
   const ManageRestaurantEvent();
@@ -15,4 +17,10 @@ class RestaurantFetched extends ManageRestaurantEvent {
 class DeleteRestaurantEvent extends ManageRestaurantEvent {
   DeleteRestaurantEvent(this.restaurantId);
   String restaurantId;
+}
+
+class EditRestaurant extends ManageRestaurantEvent {
+  EditRestaurant(this.restaurantId, this.editData);
+  String restaurantId;
+  RestauranteEditRequest editData;
 }

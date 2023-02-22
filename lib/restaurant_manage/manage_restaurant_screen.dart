@@ -7,6 +7,8 @@ import 'package:front/restaurant_form/restaurant_form_screen.dart';
 import '../home_screen.dart';
 import '../platos_manage/manage_platos_screen.dart';
 import 'manage_restaurant_bloc.dart';
+import 'manage_restaurant_edit.dart';
+import 'manage_restaurant_event.dart';
 
 const String imgBase = "http://localhost:8080/restaurante/";
 const String imgBasePlato = "http://localhost:8080/plato/";
@@ -36,7 +38,7 @@ class _ManageRestaurantUIState extends State<ManageRestaurantUI> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ManageRestaurantBloc, ManageRestaurantState>(
-      builder: (context, state) {
+      builder: (manageContext, state) {
         switch (state.status) {
           case ManageRestaurantStatus.failure:
             return const Center(child: Text('Fallo al cargar el restaurante'));
@@ -46,6 +48,8 @@ class _ManageRestaurantUIState extends State<ManageRestaurantUI> {
             return const Center(child: CircularProgressIndicator());
           case ManageRestaurantStatus.deleted:
             return const DeletedScreen();
+          case ManageRestaurantStatus.editSuccess:
+            return _buildScreen(state);
         }
       },
     );
@@ -128,7 +132,7 @@ class _ManageRestaurantUIState extends State<ManageRestaurantUI> {
                       Expanded(
                           flex: 10,
                           child: Text(
-                            state.restaurante!.apertura!,
+                            "${state.restaurante!.apertura!}",
                             style: TextStyle(
                                 fontWeight: FontWeight.w300, fontSize: 12),
                           ))
@@ -146,7 +150,7 @@ class _ManageRestaurantUIState extends State<ManageRestaurantUI> {
                       Expanded(
                           flex: 10,
                           child: Text(
-                            state.restaurante!.cierre!,
+                            "${state.restaurante!.cierre!}",
                             style: TextStyle(
                                 fontWeight: FontWeight.w300, fontSize: 12),
                           ))
@@ -163,8 +167,8 @@ class _ManageRestaurantUIState extends State<ManageRestaurantUI> {
                       onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  RestaurantForm.edit(state.restaurante))),
+                              builder: (manageContext) => RestaurantEditForm(
+                                  restaurant: state.restaurante!))),
                       child: Text("Editar datos")),
                   SizedBox(
                     height: 5,

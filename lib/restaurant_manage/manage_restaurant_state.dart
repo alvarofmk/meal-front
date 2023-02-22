@@ -2,7 +2,7 @@ part of 'manage_restaurant_bloc.dart';
 
 class ManageRestaurantInitial extends ManageRestaurantState {}
 
-enum ManageRestaurantStatus { initial, success, failure, deleted }
+enum ManageRestaurantStatus { initial, success, failure, deleted, editSuccess }
 
 class ManageRestaurantState extends Equatable {
   const ManageRestaurantState({

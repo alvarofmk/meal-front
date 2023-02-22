@@ -1,4 +1,5 @@
 import 'package:front/model/restaurante_detail.dart';
+import 'package:front/model/restaurante_request.dart';
 import 'package:front/repository/restaurant_repository.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
@@ -28,5 +29,10 @@ class RestaurantService {
 
   Future<void> deleteById(String restaurantId) async {
     return _restaurantRepository.deleteById(restaurantId);
+  }
+
+  Future<RestauranteDetailResult> edit(
+      String restaurantId, RestauranteEditRequest editData) async {
+    return _restaurantRepository.edit(restaurantId, editData);
   }
 }

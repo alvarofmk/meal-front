@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:front/model/restaurante_detail.dart';
+import 'package:front/model/restaurante_request.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
@@ -42,5 +43,13 @@ class RestaurantRepository {
   void deleteById(String restaurantId) async {
     String url = baseUrl + "${restaurantId}";
     await _client.delete(url);
+  }
+
+  Future<RestauranteDetailResult> edit(
+      String restaurantId, RestauranteEditRequest editData) async {
+    String url = baseUrl + "${restaurantId}";
+
+    var jsonResponse = await _client.put(url, editData);
+    return RestauranteDetailResult.fromJson(jsonDecode(jsonResponse));
   }
 }
