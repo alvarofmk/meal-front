@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front/model/restaurante_detail.dart';
@@ -52,10 +54,14 @@ class _RestaurantEditFormUIUIState extends State<RestaurantEditFormUI> {
     return BlocBuilder<ManageRestaurantBloc, ManageRestaurantState>(
       builder: (context, state) {
         if (state.status == ManageRestaurantStatus.failure)
-          return const Center(
-              child: Text('No se ha podido editar el restaurante'));
-        if (state.status == ManageRestaurantStatus.editSuccess)
-          Navigator.of(context).pop();
+          return Scaffold(
+            body: Center(
+              child: Text("Fallo al modificar"),
+            ),
+          );
+        if (state.status == ManageRestaurantStatus.editSuccess) {
+          Navigator.of(context).pop(true);
+        }
         if (state.status == ManageRestaurantStatus.success ||
             state.status == ManageRestaurantStatus.initial)
           return Scaffold(
@@ -170,16 +176,17 @@ class _RestaurantEditFormUIUIState extends State<RestaurantEditFormUI> {
                                 "${_apertura.hour < 10 ? "0${_apertura.hour}" : _apertura.hour}:${_apertura.minute < 10 ? "0${_apertura.minute}" : _apertura.minute}:00",
                                 "${_cierre.hour < 10 ? "0${_cierre.hour}" : _cierre.hour}:${_cierre.minute < 10 ? "0${_cierre.minute}" : _cierre.minute}:00",
                                 _descripcionController.value.text)));
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Processing Data')),
-                        );
                       },
                       child: const Text('Submit'),
                     ),
                   ],
                 ),
               )));
-        return Text("Fallo");
+        return Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
       },
     );
   }

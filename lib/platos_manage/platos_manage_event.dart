@@ -1,4 +1,6 @@
-part of 'platos_manage_bloc.dart';
+import 'package:equatable/equatable.dart';
+
+import '../model/plato_request.dart';
 
 abstract class PlatosManageEvent extends Equatable {
   const PlatosManageEvent();
@@ -15,4 +17,17 @@ class PlatosFetchedEvent extends PlatosManageEvent {
 class DeletePlatoEvent extends PlatosManageEvent {
   DeletePlatoEvent(this.platoId);
   String platoId;
+}
+
+class PlatoDetailFetchedEvent extends PlatosManageEvent {
+  PlatoDetailFetchedEvent(this.platoId);
+  String platoId;
+}
+
+class EditCancelled extends PlatosManageEvent {}
+
+class EditPlato extends PlatosManageEvent {
+  EditPlato(this.platoId, this.platoRequest);
+  String platoId;
+  PlatoRequest platoRequest;
 }

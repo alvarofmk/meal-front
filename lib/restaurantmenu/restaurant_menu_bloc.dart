@@ -79,18 +79,27 @@ class RestaurantMenuBloc
       NextPlatosFetched event, Emitter<RestaurantMenuState> emit) async {
     if (state.hasReachedMax) return;
     try {
-      final platos =
-          await _platoService.getByRestaurant(state.id, state.currentPage + 1);
-      platos.contenido!.isEmpty
-          ? emit(state.copyWith(hasReachedMax: true))
-          : emit(
-              state.copyWith(
-                  status: RestaurantMenuStatus.success,
-                  platos: List.of(state.platos)..addAll(platos.contenido!),
-                  hasReachedMax:
-                      platos.paginaActual! + 1 >= platos.numeroPaginas!,
-                  currentPage: state.currentPage + 1),
-            );
+      if (state.status == RestaurantMenuStatus.success) {
+        final platos = await _platoService.getByRestaurant(
+            state.id, state.currentPage + 1);
+        emit(
+          state.copyWith(
+              status: RestaurantMenuStatus.success,
+              platos: List.of(state.platos)..addAll(platos.contenido!),
+              hasReachedMax: platos.paginaActual! + 1 >= platos.numeroPaginas!,
+              currentPage: state.currentPage + 1),
+        );
+      } else if (state.status == RestaurantMenuStatus.searchFound) {
+        final platos = await _platoService.searchByRestaurant(
+            state.id, state.lastSearch, state.currentPage + 1);
+        emit(
+          state.copyWith(
+              status: RestaurantMenuStatus.success,
+              platos: List.of(state.platos)..addAll(platos.contenido!),
+              hasReachedMax: platos.paginaActual! + 1 >= platos.numeroPaginas!,
+              currentPage: state.currentPage + 1),
+        );
+      }
     } catch (_) {
       emit(state.copyWith(status: RestaurantMenuStatus.noneFound));
     }
@@ -111,10 +120,11 @@ class RestaurantMenuBloc
           await _platoService.searchByRestaurant(state.id, searchString, 0);
       return emit(
         state.copyWith(
-            status: RestaurantMenuStatus.success,
+            status: RestaurantMenuStatus.searchFound,
             platos: platos.contenido,
             hasReachedMax: platos.paginaActual! + 1 >= platos.numeroPaginas!,
-            currentPage: 1),
+            currentPage: 0,
+            lastSearch: searchString),
       );
     } catch (_) {
       emit(state.copyWith(status: RestaurantMenuStatus.noneFound));

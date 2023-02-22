@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front/platos_manage/platos_manage_bloc.dart';
+import 'package:front/platos_manage/platos_manage_event.dart';
 
 import '../landing/landing_screen.dart';
 import '../model/plato_list_result.dart';
+import '../model/plato_request.dart';
 import '../restaurantmenu/restaurant_screen.dart';
 
 String id = "";
@@ -85,6 +87,13 @@ class _ManagePlatosScreenUIState extends State<ManagePlatosScreenUI> {
             );
           case PlatosManageStatus.initial:
             return const Center(child: CircularProgressIndicator());
+          case PlatosManageStatus.editing:
+            return const Center(child: CircularProgressIndicator());
+          case PlatosManageStatus.editSuccess:
+            context
+                .read<PlatosManageBloc>()
+                .add(PlatosFetchedEvent(state.restaurantId));
+            return const Center(child: CircularProgressIndicator());
         }
       },
     );
@@ -148,7 +157,11 @@ class PlatoManageItem extends StatelessWidget {
                   backgroundColor: Colors.red.shade700,
                   child: IconButton(
                     color: Colors.white,
-                    onPressed: () {},
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (manageContext) =>
+                                PlatoEditForm(context, plato.id!))),
                     icon: Icon(Icons.edit),
                   ),
                 ),
@@ -205,6 +218,215 @@ class PlatoManageItem extends StatelessWidget {
             ),
           ],
         );
+      },
+    );
+  }
+}
+
+class PlatoEditForm extends StatelessWidget {
+  BuildContext formContext;
+  String platoId;
+
+  PlatoEditForm(this.formContext, this.platoId);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider.value(
+      value: BlocProvider.of<PlatosManageBloc>(formContext)
+        ..add(PlatoDetailFetchedEvent(platoId)),
+      child: PlatoEditFormUI(),
+    );
+  }
+}
+
+class PlatoEditFormUI extends StatefulWidget {
+  PlatoEditFormUI();
+
+  @override
+  State<PlatoEditFormUI> createState() => _RestaurantEditFormUIState();
+}
+
+class _RestaurantEditFormUIState extends State<PlatoEditFormUI> {
+  TextEditingController _nombreController = TextEditingController();
+  TextEditingController _descripcionController = TextEditingController();
+  TextEditingController _precioController = TextEditingController();
+  TextEditingController _ingredientesController = TextEditingController();
+  late bool _sinGluten;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<PlatosManageBloc, PlatosManageState>(
+      listenWhen: (previous, current) {
+        return current.status == PlatosManageStatus.editing ||
+            current.status == PlatosManageStatus.editSuccess ||
+            current.status == PlatosManageStatus.failure;
+      },
+      listener: (context, state) {
+        if (state.status == PlatosManageStatus.editing) {
+          _nombreController.text = state.platoEditing!.nombre!;
+          _descripcionController.text = state.platoEditing!.nombre!;
+          _precioController.text = "${state.platoEditing!.precio!}";
+          _ingredientesController.text =
+              state.platoEditing!.ingredientes!.join(",");
+          _sinGluten = state.platoEditing!.sinGluten!;
+        } else if (state.status == PlatosManageStatus.editSuccess) {
+          Navigator.of(context).pop();
+        } else if (state.status == PlatosManageStatus.failure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Fallo al editar el plato")));
+        }
+      },
+      buildWhen: (previous, current) {
+        return current.status != PlatosManageStatus.failure;
+      },
+      builder: (context, state) {
+        if (state.status == PlatosManageStatus.editing) {
+          return Scaffold(
+              appBar: AppBar(
+                leading: BackButton(
+                  onPressed: () {
+                    context.read<PlatosManageBloc>().add(EditCancelled());
+                    Navigator.of(context).pop();
+                  },
+                ),
+                title: Text("Editar ${state.platoEditing!.nombre}"),
+                backgroundColor: Theme.of(context).colorScheme.onSecondary,
+                foregroundColor: Theme.of(context).colorScheme.primary,
+              ),
+              body: Form(
+                  child: Padding(
+                padding: EdgeInsets.all(25),
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 4,
+                          child: Text("Nombre"),
+                        ),
+                        Expanded(
+                          flex: 10,
+                          child: TextFormField(
+                            controller: _nombreController,
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 4,
+                          child: Text("Descripción"),
+                        ),
+                        Expanded(
+                          flex: 10,
+                          child: TextFormField(
+                            minLines: 2,
+                            maxLines: 5,
+                            controller: _descripcionController,
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 4,
+                          child: Text("Precio"),
+                        ),
+                        Expanded(
+                          flex: 10,
+                          child: TextFormField(
+                            keyboardType:
+                                TextInputType.numberWithOptions(decimal: true),
+                            controller: _precioController,
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                            flex: 4,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Ingredientes"),
+                                Text(
+                                  "Separados por comas",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w300,
+                                      fontSize: 12),
+                                )
+                              ],
+                            )),
+                        Expanded(
+                          flex: 10,
+                          child: TextFormField(
+                            minLines: 1,
+                            maxLines: 6,
+                            controller: _ingredientesController,
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 4,
+                          child: Text("Es sin gluten:"),
+                        ),
+                        Expanded(
+                          flex: 10,
+                          child: Checkbox(
+                            value: _sinGluten,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                _sinGluten = !_sinGluten;
+                                print(_sinGluten);
+                              });
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.read<PlatosManageBloc>().add(EditPlato(
+                            state.platoEditing!.id!,
+                            PlatoRequest(
+                                _nombreController.text,
+                                _descripcionController.text,
+                                double.parse(_precioController.text),
+                                _ingredientesController.text.split(","),
+                                _sinGluten)));
+                      },
+                      child: const Text('Submit'),
+                    ),
+                  ],
+                ),
+              )));
+        } else if (state.status == PlatosManageStatus.failure) {
+          return Text("Fallo");
+        } else {
+          return Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
       },
     );
   }

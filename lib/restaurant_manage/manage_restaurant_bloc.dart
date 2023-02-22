@@ -53,7 +53,7 @@ class ManageRestaurantBloc
         state.copyWith(status: ManageRestaurantStatus.deleted),
       );
     } catch (_) {
-      emit(state.copyWith(status: ManageRestaurantStatus.success));
+      emit(state.copyWith(status: ManageRestaurantStatus.deleteFailure));
     }
   }
 

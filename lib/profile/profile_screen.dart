@@ -187,6 +187,10 @@ class _ProfileUIState extends State<ProfileUI> {
                   SizedBox(
                     height: 15,
                   ),
+                  Divider(),
+                  SizedBox(
+                    height: 15,
+                  ),
                   OwnerSection(state.restaurantes!),
                 ]),
               ),
@@ -204,8 +208,21 @@ class _ProfileUIState extends State<ProfileUI> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('¿Eliminar cuenta?'),
-          content: Text(
-              """¿Estás seguro de querer eliminar su cuenta? Esta acción no se puede deshacer. Por seguridad, si usted gestiona algún restaurante elimine o desactive sus resataurantes antes de eliminar la cuenta. Le recomendamos desactivar los pedidos antes de optar por borrar definitivamente su cuenta."""),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                  """¿Estás seguro de querer eliminar su cuenta? Esta acción no se puede deshacer. Por seguridad, si usted gestiona algún restaurante elimine o desactive sus resataurantes antes de eliminar la cuenta. Le recomendamos desactivar los pedidos antes de optar por borrar definitivamente su cuenta."""),
+              if (!_canDeleteAccount)
+                Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Text(
+                    "Elimine sus restaurantes o traspase la administración a otro usuario antes de borrar su cuenta.",
+                    style: TextStyle(color: Colors.red, fontSize: 12),
+                  ),
+                ),
+            ],
+          ),
           actions: <Widget>[
             ElevatedButton(
               style: TextButton.styleFrom(
@@ -261,12 +278,14 @@ class OwnerSection extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
-                elevation: 1,
+                elevation: 3,
                 child: Container(
                   height: 50,
                   child: ListTile(
                     title: Text(restaurantes[index].nombre!),
                     trailing: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.red.shade700),
                         onPressed: () => Navigator.push(
                             context,
                             MaterialPageRoute(

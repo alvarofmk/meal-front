@@ -10,7 +10,7 @@ import 'manage_restaurant_bloc.dart';
 import 'manage_restaurant_edit.dart';
 import 'manage_restaurant_event.dart';
 
-const String imgBase = "http://localhost:8080/restaurante/";
+String imgBase = "http://localhost:8080/restaurante/";
 const String imgBasePlato = "http://localhost:8080/plato/";
 const String imgSuffix = "/img/";
 
@@ -37,25 +37,37 @@ class ManageRestaurantUI extends StatefulWidget {
 class _ManageRestaurantUIState extends State<ManageRestaurantUI> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ManageRestaurantBloc, ManageRestaurantState>(
+    return BlocConsumer<ManageRestaurantBloc, ManageRestaurantState>(
+      listenWhen: (previous, current) {
+        return current.status == ManageRestaurantStatus.deleteFailure;
+      },
+      listener: (context, state) {
+        if (state == ManageRestaurantStatus.deleteFailure) _showDeleteError();
+      },
+      buildWhen: (previous, current) {
+        return current.status != ManageRestaurantStatus.deleteFailure;
+      },
       builder: (manageContext, state) {
         switch (state.status) {
           case ManageRestaurantStatus.failure:
             return const Center(child: Text('Fallo al cargar el restaurante'));
           case ManageRestaurantStatus.success:
-            return _buildScreen(state);
+            return _buildScreen(state, manageContext);
           case ManageRestaurantStatus.initial:
             return const Center(child: CircularProgressIndicator());
           case ManageRestaurantStatus.deleted:
             return const DeletedScreen();
           case ManageRestaurantStatus.editSuccess:
-            return _buildScreen(state);
+            return _buildScreen(state, manageContext);
+          case ManageRestaurantStatus.deleteFailure:
+            return Text("data");
         }
       },
     );
   }
 
-  Scaffold _buildScreen(ManageRestaurantState state) {
+  Scaffold _buildScreen(
+      ManageRestaurantState state, BuildContext manageContext) {
     return Scaffold(
       appBar: AppBar(
         title: Text(state.restaurante!.nombre!),
@@ -165,10 +177,18 @@ class _ManageRestaurantUIState extends State<ManageRestaurantUI> {
                   ),
                   ElevatedButton(
                       onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (manageContext) => RestaurantEditForm(
-                                  restaurant: state.restaurante!))),
+                              context,
+                              MaterialPageRoute(
+                                  builder: (manageContext) =>
+                                      RestaurantEditForm(
+                                          restaurant: state.restaurante!)))
+                          .then((successfulUpdate) => {
+                                if (successfulUpdate)
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('Modificado con éxito')),
+                                  )
+                              }),
                       child: Text("Editar datos")),
                   SizedBox(
                     height: 5,
@@ -235,6 +255,16 @@ class _ManageRestaurantUIState extends State<ManageRestaurantUI> {
         );
       },
     );
+  }
+
+  void _showDeleteError() {
+    /*Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text(error),
+      backgroundColor: Theme.of(context).errorColor,
+    ));*/
+
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("No se ha podido borrar el restaurante")));
   }
 }
 

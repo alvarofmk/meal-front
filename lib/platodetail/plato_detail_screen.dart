@@ -298,8 +298,7 @@ class ReviewItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(10.0),
         ),
         elevation: 1,
-        child: Container(
-          height: 70,
+        child: Flexible(
           child: ListTile(
             leading: Text("${valoracion.nota}"),
             title: Text(valoracion.username!),
