@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:file_picker/src/platform_file.dart';
 
 import '../model/plato_request.dart';
 
@@ -30,4 +31,10 @@ class EditPlato extends PlatosManageEvent {
   EditPlato(this.platoId, this.platoRequest);
   String platoId;
   PlatoRequest platoRequest;
+}
+
+class ChangeImgEvent extends PlatosManageEvent {
+  ChangeImgEvent(this.platoId, this.file);
+  String platoId;
+  PlatformFile file;
 }

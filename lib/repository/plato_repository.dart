@@ -1,11 +1,14 @@
 import 'dart:convert';
 
+import 'package:file_picker/src/platform_file.dart';
 import 'package:front/model/plato_detail_result.dart';
 import 'package:front/model/plato_request.dart';
 import 'package:front/model/rating.dart';
+import 'package:front/service/localstorage_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
+import '../model/login_model.dart';
 import '../model/plato_list_result.dart';
 import '../rest_client/rest_client.dart';
 
@@ -38,7 +41,6 @@ class PlatoRepository {
   Future<PlatoDetailResult> rate(
       String platoId, double nota, String? comentario) async {
     String url = baseUrl + "rate/${platoId}";
-
     var jsonResponse = await _client.post(
         url, RateRequest(nota: nota, comentario: comentario));
     return PlatoDetailResult.fromJson(jsonDecode(jsonResponse));
@@ -54,6 +56,14 @@ class PlatoRepository {
     String url = baseUrl + "${platoId}";
 
     var jsonResponse = await _client.put(url, platoRequest);
+    return PlatoDetailResult.fromJson(jsonDecode(jsonResponse));
+  }
+
+  Future<PlatoDetailResult> editImg(
+      String platoId, PlatformFile file, String token) async {
+    String url = baseUrl + "${platoId}/img/";
+
+    var jsonResponse = await _client.putMultiPart(url, null, file, token);
     return PlatoDetailResult.fromJson(jsonDecode(jsonResponse));
   }
 }

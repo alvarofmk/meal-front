@@ -1,3 +1,4 @@
+import 'package:file_picker/src/platform_file.dart';
 import 'package:front/model/plato_detail_result.dart';
 import 'package:front/model/plato_list_result.dart';
 import 'package:front/model/plato_request.dart';
@@ -5,12 +6,18 @@ import 'package:front/repository/plato_repository.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
+import '../config/locator.dart';
+import 'auth_service.dart';
+
+@Order(5)
 @singleton
 class PlatoService {
   late PlatoRepository _platoRepository;
+  late JwtAuthenticationService _authService;
 
   PlatoService() {
     _platoRepository = GetIt.I.get<PlatoRepository>();
+    _authService = GetIt.I.get<JwtAuthenticationService>();
   }
 
   Future<PlatoListResult> getByRestaurant(String restaurantId, int page) async {
@@ -38,5 +45,10 @@ class PlatoService {
   Future<PlatoDetailResult> edit(
       String platoId, PlatoRequest platoRequest) async {
     return _platoRepository.edit(platoId, platoRequest);
+  }
+
+  Future<PlatoDetailResult> editImg(String platoId, PlatformFile file) async {
+    var user = await _authService.getCurrentUser();
+    return _platoRepository.editImg(platoId, file, user!.accessToken);
   }
 }

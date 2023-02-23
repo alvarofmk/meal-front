@@ -28,6 +28,7 @@ class PlatosManageBloc extends Bloc<PlatosManageEvent, PlatosManageState> {
     );
     on<PlatoDetailFetchedEvent>(_onPlatoDetailFetchedEvent);
     on<EditPlato>(_onEditPlato);
+    on<ChangeImgEvent>(_onChangeImgEvent);
   }
 
   FutureOr<void> _onPlatosFetchedEvent(
@@ -103,6 +104,21 @@ class PlatosManageBloc extends Bloc<PlatosManageEvent, PlatosManageState> {
       EditPlato event, Emitter<PlatosManageState> emit) async {
     try {
       final plato = await _platoService.edit(event.platoId, event.platoRequest);
+      return emit(
+        state.copyWith(
+          status: PlatosManageStatus.editSuccess,
+          platoEditing: plato,
+        ),
+      );
+    } catch (_) {
+      emit(state.copyWith(status: PlatosManageStatus.failure));
+    }
+  }
+
+  FutureOr<void> _onChangeImgEvent(
+      ChangeImgEvent event, Emitter<PlatosManageState> emit) async {
+    try {
+      final plato = await _platoService.editImg(event.platoId, event.file);
       return emit(
         state.copyWith(
           status: PlatosManageStatus.editSuccess,

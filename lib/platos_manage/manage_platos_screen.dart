@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front/platos_manage/platos_manage_bloc.dart';
@@ -119,11 +120,17 @@ class _ManagePlatosScreenUIState extends State<ManagePlatosScreenUI> {
   }
 }
 
-class PlatoManageItem extends StatelessWidget {
+class PlatoManageItem extends StatefulWidget {
   const PlatoManageItem({super.key, required this.plato});
 
   final PlatoGeneric plato;
 
+  @override
+  State<PlatoManageItem> createState() => _PlatoManageItemState();
+}
+
+class _PlatoManageItemState extends State<PlatoManageItem> {
+  FilePickerResult? result;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -132,11 +139,11 @@ class PlatoManageItem extends StatelessWidget {
         height: 70,
         child: ListTile(
           leading: Image.network(
-            imgBasePlato + plato.id! + imgSuffix,
+            imgBasePlato + widget.plato.id! + imgSuffix,
             fit: BoxFit.contain,
           ),
-          title: Text(plato.nombre!),
-          subtitle: Text("${plato.precio!} €"),
+          title: Text(widget.plato.nombre!),
+          subtitle: Text("${widget.plato.precio!} €"),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -146,7 +153,22 @@ class PlatoManageItem extends StatelessWidget {
                   backgroundColor: Colors.red.shade700,
                   child: IconButton(
                     color: Colors.white,
-                    onPressed: () {},
+                    onPressed: () async {
+                      result = await FilePicker.platform.pickFiles(
+                        withData: true,
+                        allowMultiple: false,
+                        allowedExtensions: ['jpg', 'png'],
+                      );
+                      if (result != null) {
+                        BlocProvider.of<PlatosManageBloc>(context)
+                          ..add(ChangeImgEvent(
+                              widget.plato.id!, result!.files[0]));
+                        setState(() {});
+                        result?.files.forEach((element) {
+                          print(element.name);
+                        });
+                      }
+                    },
                     icon: Icon(Icons.image),
                   ),
                 ),
@@ -161,7 +183,7 @@ class PlatoManageItem extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (manageContext) =>
-                                PlatoEditForm(context, plato.id!))),
+                                PlatoEditForm(context, widget.plato.id!))),
                     icon: Icon(Icons.edit),
                   ),
                 ),
@@ -172,7 +194,7 @@ class PlatoManageItem extends StatelessWidget {
                   backgroundColor: Colors.red.shade700,
                   child: IconButton(
                     color: Colors.white,
-                    onPressed: () => _dialogBuilder(context, plato),
+                    onPressed: () => _dialogBuilder(context, widget.plato),
                     icon: Icon(Icons.delete),
                   ),
                 ),

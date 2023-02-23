@@ -46,6 +46,8 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   image_picker: ^0.8.6+1
   image_cropper: ^3.0.1
+  file_picker: ^5.2.5
+  http_parser: ^4.0.2
 
 dev_dependencies:
   bloc_test: ^9.0.0

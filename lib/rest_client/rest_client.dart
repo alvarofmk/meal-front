@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http_interceptor/http_interceptor.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:injectable/injectable.dart';
 import 'package:http/http.dart' as http;
 
@@ -106,6 +108,32 @@ class RestClient {
       final response = await _httpClient!
           .post(uri, body: jsonEncode(body), headers: headers);
       var responseJson = _response(response);
+      return responseJson;
+    } on SocketException catch (ex) {
+      throw Exception('No internet connection: ${ex.message}');
+    }
+  }
+
+  Future<dynamic> putMultiPart(
+      String url, dynamic body, PlatformFile file, String token) async {
+    try {
+      Uri uri = Uri.parse(ApiConstants.baseUrl + url);
+
+      Map<String, String> headers = Map();
+      headers.addAll({
+        'Content-Type': 'multipart/form-data',
+        'Authorization': 'Bearer ${token}',
+      });
+
+      var request = new http.MultipartRequest('PUT', uri);
+      final httpImage = http.MultipartFile.fromBytes('file', file.bytes!,
+          contentType: MediaType('image', file.extension!),
+          filename: file.name);
+      request.files.add(httpImage);
+      request.headers.addAll(headers);
+
+      final response = await _httpClient!.send(request);
+      var responseJson = response.stream.bytesToString();
       return responseJson;
     } on SocketException catch (ex) {
       throw Exception('No internet connection: ${ex.message}');
