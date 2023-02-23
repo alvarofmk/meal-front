@@ -51,14 +51,18 @@ class _RestaurantEditFormUIUIState extends State<RestaurantEditFormUI> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ManageRestaurantBloc, ManageRestaurantState>(
+    return BlocConsumer<ManageRestaurantBloc, ManageRestaurantState>(
+      listenWhen: (previous, current) {
+        return current.status == ManageRestaurantStatus.failure;
+      },
+      listener: (context, state) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Fallo al editar el estaurante")));
+      },
+      buildWhen: (previous, current) {
+        return current.status != ManageRestaurantStatus.failure;
+      },
       builder: (context, state) {
-        if (state.status == ManageRestaurantStatus.failure)
-          return Scaffold(
-            body: Center(
-              child: Text("Fallo al modificar"),
-            ),
-          );
         if (state.status == ManageRestaurantStatus.editSuccess) {
           Navigator.of(context).pop(true);
         }
