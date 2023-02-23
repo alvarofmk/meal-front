@@ -1,14 +1,11 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:front/home_screen.dart';
-import 'package:front/model/restaurante_detail.dart';
-import 'package:front/photo_bloc/edit_photo_screen.dart';
 import 'package:front/restaurant_form/restaurant_form_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-
-import '../photo_bloc/photo_bloc.dart';
 
 class RestaurantForm extends StatefulWidget {
   RestaurantForm({Key? key}) : super(key: key);
@@ -20,6 +17,8 @@ class RestaurantForm extends StatefulWidget {
 class _RestaurantFormState extends State<RestaurantForm> {
   final picker = ImagePicker();
   late File _image;
+  FilePickerResult? result;
+  bool imgSelected = false;
 
   @override
   Widget build(BuildContext context) {
@@ -30,129 +29,138 @@ class _RestaurantFormState extends State<RestaurantForm> {
           final formBloc = BlocProvider.of<RestaurantFormBloc>(context);
 
           return Theme(
-              data: Theme.of(context).copyWith(
-                inputDecorationTheme: InputDecorationTheme(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
+            data: Theme.of(context).copyWith(
+              inputDecorationTheme: InputDecorationTheme(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
                 ),
               ),
-              child: BlocProvider(
-                create: (context) => PhotoBloc(),
-                child: Builder(
-                  builder: (context) {
-                    final photoBloc = BlocProvider.of<PhotoBloc>(context);
-                    return Scaffold(
-                      backgroundColor: Colors.red.shade700,
-                      appBar: AppBar(title: const Text('Restaurante')),
-                      body:
-                          FormBlocListener<RestaurantFormBloc, String, String>(
-                        onSubmitting: (context, state) {
-                          LoadingDialog.show(context);
-                        },
-                        onSuccess: (context, state) {
-                          LoadingDialog.hide(context);
+            ),
+            child: Builder(
+              builder: (context) {
+                return Scaffold(
+                  backgroundColor: Colors.red.shade700,
+                  appBar: AppBar(title: const Text('Restaurante')),
+                  body: FormBlocListener<RestaurantFormBloc, String, String>(
+                    onSubmitting: (context, state) {
+                      LoadingDialog.show(context);
+                    },
+                    onSuccess: (context, state) {
+                      LoadingDialog.hide(context);
 
-                          Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (_) => const HomeScreen()));
-                        },
-                        onFailure: (context, state) {
-                          LoadingDialog.hide(context);
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (_) => HomeScreen.withIndex(
+                                indexInitial: 0,
+                              )));
+                    },
+                    onFailure: (context, state) {
+                      LoadingDialog.hide(context);
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(state.failureResponse!)));
-                        },
-                        child: SingleChildScrollView(
-                          physics: const ClampingScrollPhysics(),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: <Widget>[
-                                TextFieldBlocBuilder(
-                                  textFieldBloc: formBloc.nombre,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Nombre',
-                                    prefixIcon: Icon(Icons.business),
-                                  ),
-                                ),
-                                TextFieldBlocBuilder(
-                                  textFieldBloc: formBloc.descripcion,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Descripción',
-                                    prefixIcon: Icon(Icons.text_fields),
-                                  ),
-                                ),
-                                TimeFieldBlocBuilder(
-                                  timeFieldBloc: formBloc.apertura,
-                                  format: DateFormat('hh:mm a'),
-                                  initialTime: TimeOfDay(hour: 12, minute: 00),
-                                  decoration: const InputDecoration(
-                                    labelText: 'Apertura',
-                                    prefixIcon: Icon(Icons.access_time),
-                                  ),
-                                ),
-                                TimeFieldBlocBuilder(
-                                  timeFieldBloc: formBloc.cierre,
-                                  format: DateFormat('hh:mm a'),
-                                  initialTime: TimeOfDay(hour: 12, minute: 00),
-                                  decoration: const InputDecoration(
-                                    labelText: 'Cierre',
-                                    prefixIcon: Icon(Icons.time_to_leave),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    selectPhoto(ImageSource.gallery);
-                                  },
-                                  child: BlocBuilder<PhotoBloc, PhotoState>(
-                                    bloc: photoBloc,
-                                    builder: (context, state) {
-                                      return Container(
-                                        height: 150,
-                                        width: 150,
-                                        child: state is PhotoInitial
-                                            ? Image.asset(
-                                                'assets/default-restaurant.jpg')
-                                            : Image.file(
-                                                (state as PhotoSet).photo),
-                                      );
-                                    },
-                                  ),
-                                ),
-                                ElevatedButton(
-                                  onPressed: formBloc.submit,
-                                  child: const Text('SUBMIT'),
-                                ),
-                              ],
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(state.failureResponse!)));
+                    },
+                    child: SingleChildScrollView(
+                      physics: const ClampingScrollPhysics(),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: <Widget>[
+                            TextFieldBlocBuilder(
+                              textFieldBloc: formBloc.nombre,
+                              decoration: const InputDecoration(
+                                labelText: 'Nombre',
+                                prefixIcon: Icon(Icons.business),
+                              ),
                             ),
-                          ),
+                            TextFieldBlocBuilder(
+                              textFieldBloc: formBloc.descripcion,
+                              decoration: const InputDecoration(
+                                labelText: 'Descripción',
+                                prefixIcon: Icon(Icons.text_fields),
+                              ),
+                            ),
+                            TimeFieldBlocBuilder(
+                              timeFieldBloc: formBloc.apertura,
+                              format: DateFormat('hh:mm a'),
+                              initialTime: TimeOfDay(hour: 12, minute: 00),
+                              decoration: const InputDecoration(
+                                labelText: 'Apertura',
+                                prefixIcon: Icon(Icons.access_time),
+                              ),
+                            ),
+                            TimeFieldBlocBuilder(
+                              timeFieldBloc: formBloc.cierre,
+                              format: DateFormat('hh:mm a'),
+                              initialTime: TimeOfDay(hour: 12, minute: 00),
+                              decoration: const InputDecoration(
+                                labelText: 'Cierre',
+                                prefixIcon: Icon(Icons.time_to_leave),
+                              ),
+                            ),
+                            ElevatedButton(
+                                onPressed: () async {
+                                  result = await FilePicker.platform.pickFiles(
+                                    withData: true,
+                                    allowMultiple: false,
+                                    allowedExtensions: ['jpg', 'png'],
+                                  );
+                                  setState(() {
+                                    imgSelected = result != null;
+                                  });
+                                  if (imgSelected)
+                                    formBloc.saveImg(result!.files[0]);
+                                },
+                                child: Text("Seleccione una imagen")),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            if (imgSelected)
+                              Stack(
+                                  alignment: Alignment.bottomCenter,
+                                  children: <Widget>[
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      child: Image.file(
+                                        File(result!.files[0].path!),
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
+                                      ),
+                                    ),
+                                    Positioned(
+                                      right: 8,
+                                      top: 8,
+                                      child: IconButton(
+                                        color: Colors.white,
+                                        onPressed: () {
+                                          setState(() {
+                                            result = null;
+                                            imgSelected = false;
+                                          });
+                                        },
+                                        icon: Icon(Icons.close),
+                                      ),
+                                    ),
+                                  ]),
+                            if (imgSelected)
+                              SizedBox(
+                                height: 10,
+                              ),
+                            ElevatedButton(
+                              onPressed: imgSelected ? formBloc.submit : null,
+                              child: const Text('Crear'),
+                            ),
+                          ],
                         ),
                       ),
-                    );
-                  },
-                ),
-              ));
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
         },
       ),
     );
-  }
-
-  Future selectPhoto(ImageSource imageSource) async {
-    final pickedFile = await picker.pickImage(source: imageSource);
-
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => EditPhotoPage(
-                      image: _image,
-                    )));
-      } else
-        print('No photo was selected or taken');
-    });
   }
 }
 

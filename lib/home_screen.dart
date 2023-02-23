@@ -23,14 +23,20 @@ List<Widget> _widgetOptions = <Widget>[
 ];
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
+  HomeScreen.withIndex({super.key, required this.indexInitial});
+  int indexInitial = 1;
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState(indexInitial);
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 1;
+  late int _selectedIndex;
+
+  _HomeScreenState(int indexInitial) {
+    _selectedIndex = indexInitial;
+  }
 
   void _onItemTapped(int index) {
     setState(() {

@@ -46,4 +46,11 @@ class RestaurantService {
     var user = await _authService.getCurrentUser();
     return _restaurantRepository.editImg(restaurantId, file, user!.accessToken);
   }
+
+  Future<RestauranteDetailResult> create(
+      RestauranteEditRequest restauranteEditRequest, PlatformFile file) async {
+    var user = await _authService.getCurrentUser();
+    return _restaurantRepository.create(
+        restauranteEditRequest, file, user!.accessToken);
+  }
 }

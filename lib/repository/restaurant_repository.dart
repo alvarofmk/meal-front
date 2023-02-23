@@ -61,4 +61,15 @@ class RestaurantRepository {
     var jsonResponse = await _client.putMultiPart(url, null, file, accessToken);
     return RestauranteDetailResult.fromJson(jsonDecode(jsonResponse));
   }
+
+  Future<RestauranteDetailResult> create(
+      RestauranteEditRequest restauranteEditRequest,
+      PlatformFile file,
+      String accessToken) async {
+    String url = baseUrl;
+
+    var jsonResponse = await _client.postMultiPart(
+        url, restauranteEditRequest, file, accessToken);
+    return RestauranteDetailResult.fromJson(jsonDecode(jsonResponse));
+  }
 }

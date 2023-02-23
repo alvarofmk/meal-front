@@ -24,7 +24,7 @@ class App extends MaterialApp {
   App({super.key})
       : super(
             debugShowCheckedModeBanner: false,
-            home: const HomeScreen(),
+            home: HomeScreen(),
             theme: ThemeData(
                 sliderTheme: SliderThemeData(
                   showValueIndicator: ShowValueIndicator.always,
