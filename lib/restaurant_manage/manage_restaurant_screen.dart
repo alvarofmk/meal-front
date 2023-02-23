@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front/model/restaurante_detail.dart';
@@ -10,9 +11,7 @@ import 'manage_restaurant_bloc.dart';
 import 'manage_restaurant_edit.dart';
 import 'manage_restaurant_event.dart';
 
-String imgBase = "http://localhost:8080/restaurante/";
-const String imgBasePlato = "http://localhost:8080/plato/";
-const String imgSuffix = "/img/";
+String imgBase = "http://localhost:8080/download/";
 
 class ManageRestaurantScreen extends StatelessWidget {
   ManageRestaurantScreen({super.key, required this.restaurantId});
@@ -39,10 +38,16 @@ class _ManageRestaurantUIState extends State<ManageRestaurantUI> {
   Widget build(BuildContext context) {
     return BlocConsumer<ManageRestaurantBloc, ManageRestaurantState>(
       listenWhen: (previous, current) {
-        return current.status == ManageRestaurantStatus.deleteFailure;
+        return current.status == ManageRestaurantStatus.deleteFailure ||
+            current.status == ManageRestaurantStatus.editSuccess;
       },
       listener: (context, state) {
-        if (state == ManageRestaurantStatus.deleteFailure) _showDeleteError();
+        if (state.status == ManageRestaurantStatus.deleteFailure)
+          _showDeleteError();
+        if (state.status == ManageRestaurantStatus.editSuccess)
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Modificado con éxito')),
+          );
       },
       buildWhen: (previous, current) {
         return current.status != ManageRestaurantStatus.deleteFailure;
@@ -68,6 +73,7 @@ class _ManageRestaurantUIState extends State<ManageRestaurantUI> {
 
   Scaffold _buildScreen(
       ManageRestaurantState state, BuildContext manageContext) {
+    FilePickerResult? result;
     return Scaffold(
       appBar: AppBar(
         title: Text(state.restaurante!.nombre!),
@@ -82,7 +88,7 @@ class _ManageRestaurantUIState extends State<ManageRestaurantUI> {
           children: [
             Stack(alignment: Alignment.bottomCenter, children: <Widget>[
               Image.network(
-                imgBase + state.restaurante!.id! + imgSuffix,
+                imgBase + state.restaurante!.coverImgUrl!,
               ),
               Positioned(
                   right: 15,
@@ -91,7 +97,22 @@ class _ManageRestaurantUIState extends State<ManageRestaurantUI> {
                     backgroundColor: Colors.red.shade700,
                     child: IconButton(
                       color: Colors.white,
-                      onPressed: () {},
+                      onPressed: () async {
+                        result = await FilePicker.platform.pickFiles(
+                          withData: true,
+                          allowMultiple: false,
+                          allowedExtensions: ['jpg', 'png'],
+                        );
+                        if (result != null) {
+                          BlocProvider.of<ManageRestaurantBloc>(context)
+                            ..add(ChangeImgEvent(
+                                state.restaurante!.id!, result!.files[0]));
+                          setState(() {});
+                          result?.files.forEach((element) {
+                            print(element.name);
+                          });
+                        }
+                      },
                       icon: Icon(Icons.edit),
                     ),
                   )),
@@ -258,13 +279,9 @@ class _ManageRestaurantUIState extends State<ManageRestaurantUI> {
   }
 
   void _showDeleteError() {
-    /*Scaffold.of(context).showSnackBar(SnackBar(
-      content: Text(error),
-      backgroundColor: Theme.of(context).errorColor,
-    ));*/
-
-    ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("No se ha podido borrar el restaurante")));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+            "No se ha podido borrar el restaurante, por favor trate de eliminar todos sus platos antes.")));
   }
 }
 

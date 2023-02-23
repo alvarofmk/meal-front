@@ -10,8 +10,7 @@ import '../model/plato_request.dart';
 import '../restaurantmenu/restaurant_screen.dart';
 
 String id = "";
-const String imgBasePlato = "http://localhost:8080/plato/";
-const String imgSuffix = "/img/";
+const String imgBasePlato = "http://localhost:8080/download/";
 
 class ManagePlatosScreen extends StatelessWidget {
   ManagePlatosScreen({super.key, required this.restaurantId});
@@ -45,7 +44,18 @@ class _ManagePlatosScreenUIState extends State<ManagePlatosScreenUI> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PlatosManageBloc, PlatosManageState>(
+    return BlocConsumer<PlatosManageBloc, PlatosManageState>(
+      listenWhen: (previous, current) {
+        return current.status == PlatosManageStatus.editSuccess;
+      },
+      listener: (context, state) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Modificado con éxito')),
+        );
+        context
+            .read<PlatosManageBloc>()
+            .add(PlatosFetchedEvent(state.restaurantId));
+      },
       builder: (context, state) {
         switch (state.status) {
           case PlatosManageStatus.failure:
@@ -91,9 +101,6 @@ class _ManagePlatosScreenUIState extends State<ManagePlatosScreenUI> {
           case PlatosManageStatus.editing:
             return const Center(child: CircularProgressIndicator());
           case PlatosManageStatus.editSuccess:
-            context
-                .read<PlatosManageBloc>()
-                .add(PlatosFetchedEvent(state.restaurantId));
             return const Center(child: CircularProgressIndicator());
         }
       },
@@ -139,7 +146,7 @@ class _PlatoManageItemState extends State<PlatoManageItem> {
         height: 70,
         child: ListTile(
           leading: Image.network(
-            imgBasePlato + widget.plato.id! + imgSuffix,
+            imgBasePlato + widget.plato.imgUrl!,
             fit: BoxFit.contain,
           ),
           title: Text(widget.plato.nombre!),

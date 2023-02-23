@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:file_picker/file_picker.dart';
 
 import '../model/restaurante_request.dart';
 
@@ -23,4 +24,10 @@ class EditRestaurant extends ManageRestaurantEvent {
   EditRestaurant(this.restaurantId, this.editData);
   String restaurantId;
   RestauranteEditRequest editData;
+}
+
+class ChangeImgEvent extends ManageRestaurantEvent {
+  ChangeImgEvent(this.restaurantId, this.file);
+  String restaurantId;
+  PlatformFile file;
 }

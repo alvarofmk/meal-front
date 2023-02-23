@@ -22,6 +22,7 @@ class ManageRestaurantBloc
     );
     on<DeleteRestaurantEvent>(_onDeleteRestaurantEvent);
     on<EditRestaurant>(_onEditRestaurant);
+    on<ChangeImgEvent>(_onChangeImgEvent);
   }
 
   Future<void> _onRestaurantFetched(
@@ -65,6 +66,21 @@ class ManageRestaurantBloc
       return emit(
         state.copyWith(
             restaurante: response, status: ManageRestaurantStatus.editSuccess),
+      );
+    } catch (_) {
+      emit(state.copyWith(status: ManageRestaurantStatus.failure));
+    }
+  }
+
+  FutureOr<void> _onChangeImgEvent(
+      ChangeImgEvent event, Emitter<ManageRestaurantState> emit) async {
+    try {
+      final restaurante =
+          await _restaurantService.editImg(event.restaurantId, event.file);
+      return emit(
+        state.copyWith(
+            status: ManageRestaurantStatus.editSuccess,
+            restaurante: restaurante),
       );
     } catch (_) {
       emit(state.copyWith(status: ManageRestaurantStatus.failure));

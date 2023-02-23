@@ -5,8 +5,7 @@ import 'package:front/landing/landing_bloc.dart';
 import 'package:front/model/RestauranteListResult.dart';
 import 'package:front/restaurantmenu/restaurant_screen.dart';
 
-const String imgBase = "http://localhost:8080/restaurante/";
-const String imgSuffix = "/img/";
+const String imgBase = "http://localhost:8080/download/";
 
 final TextEditingController controller = new TextEditingController();
 
@@ -136,7 +135,7 @@ class RestauranteItem extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Image.network(
-                          imgBase + restaurante.id! + imgSuffix,
+                          imgBase + restaurante.coverImgUrl!,
                           fit: BoxFit.fill,
                         ),
                         flex: 7,

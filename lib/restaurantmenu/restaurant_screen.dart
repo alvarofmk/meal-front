@@ -8,9 +8,8 @@ import '../landing/landing_bloc.dart';
 import '../landing/landing_screen.dart';
 import '../platodetail/plato_detail_screen.dart';
 
-const String imgBase = "http://localhost:8080/restaurante/";
-const String imgBasePlato = "http://localhost:8080/plato/";
-const String imgSuffix = "/img/";
+const String imgBase = "http://localhost:8080/download/";
+const String imgBasePlato = "http://localhost:8080/download/";
 
 class RestaurantScreen extends StatelessWidget {
   RestaurantScreen({super.key, required this.restaurantId});
@@ -83,7 +82,7 @@ class _RestaurantUIState extends State<RestaurantUI> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image.network(
-              imgBase + state.restaurante!.id! + imgSuffix,
+              imgBase + state.restaurante!.coverImgUrl!,
             ),
             Padding(
                 padding: EdgeInsets.all(15),
@@ -273,7 +272,7 @@ class PlatoItem extends StatelessWidget {
         height: 70,
         child: ListTile(
           leading: Image.network(
-            imgBasePlato + plato.id! + imgSuffix,
+            imgBasePlato + plato.imgUrl!,
             fit: BoxFit.contain,
           ),
           title: Text(plato.nombre!),

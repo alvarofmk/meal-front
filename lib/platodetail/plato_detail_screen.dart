@@ -6,8 +6,7 @@ import 'package:front/login/login_screen.dart';
 import 'package:front/model/plato_detail_result.dart';
 import 'package:front/platodetail/platodetail_bloc.dart';
 
-const String imgBase = "http://localhost:8080/plato/";
-const String imgSuffix = "/img/";
+const String imgBase = "http://localhost:8080/download/";
 
 class PlatoScreen extends StatelessWidget {
   PlatoScreen({super.key, required this.platoId});
@@ -126,7 +125,7 @@ class _PlatoUIState extends State<PlatoUI> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Image.network(
-                        imgBase + state.plato!.id! + imgSuffix,
+                        imgBase + state.plato!.imgUrl!,
                         height: 300,
                         fit: BoxFit.cover,
                       ),

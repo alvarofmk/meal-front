@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:file_picker/src/platform_file.dart';
 import 'package:front/model/restaurante_detail.dart';
 import 'package:front/model/restaurante_request.dart';
 import 'package:get_it/get_it.dart';
@@ -50,6 +51,14 @@ class RestaurantRepository {
     String url = baseUrl + "${restaurantId}";
 
     var jsonResponse = await _client.put(url, editData);
+    return RestauranteDetailResult.fromJson(jsonDecode(jsonResponse));
+  }
+
+  Future<RestauranteDetailResult> editImg(
+      String restaurantId, PlatformFile file, String accessToken) async {
+    String url = baseUrl + "${restaurantId}/img/";
+
+    var jsonResponse = await _client.putMultiPart(url, null, file, accessToken);
     return RestauranteDetailResult.fromJson(jsonDecode(jsonResponse));
   }
 }
