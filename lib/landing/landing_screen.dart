@@ -5,6 +5,8 @@ import 'package:front/landing/landing_bloc.dart';
 import 'package:front/model/RestauranteListResult.dart';
 import 'package:front/restaurantmenu/restaurant_screen.dart';
 
+import '../auth/auth_bloc.dart';
+
 const String imgBase = "http://localhost:8080/download/";
 
 final TextEditingController controller = new TextEditingController();
@@ -50,6 +52,7 @@ class _MainBodyState extends State<MainBody> {
                 Text('Fallo al cargar los restaurantes'),
                 ElevatedButton(
                   onPressed: () {
+                    context.read<AuthenticationBloc>().add(UserLoggedOut());
                     context.read<LandingBloc>().add(RestaurantsFetched());
                   },
                   child: Text("Reintentar"),

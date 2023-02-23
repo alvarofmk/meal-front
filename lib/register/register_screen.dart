@@ -82,19 +82,15 @@ class _RegisterFormState extends State<RegisterForm> {
       content: Column(
         children: <Widget>[
           Container(
-            height: 200,
-            width: 200,
-            child: Text(
-              "Registrate como cliente",
-              style: textBaseStyle,
-            ),
-          ),
+              height: 300,
+              width: 300,
+              child: Image.asset("assets/register_img.png")),
           SwitchFieldBlocBuilder(
             booleanFieldBloc: registerFormBloc.registerAsOwner,
             body: Container(
               alignment: Alignment.centerLeft,
               child: const Text(
-                '¿Quieres repartir tu comida con nuestra ayuda?, ¡Marca esta casilla y te ayudamos a hacerlo!',
+                '¿Lo que quieres es repartir tu comida con nuestra ayuda?, ¡Marca esta casilla y te ayudamos a hacerlo!',
                 style: textDetailStyle,
               ),
             ),

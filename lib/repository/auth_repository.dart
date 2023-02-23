@@ -27,7 +27,7 @@ class AuthenticationRepository {
   }
 
   Future<RegisterResponse> registerClient(String username, String password,
-      String verifyPassword, String email, String name) async {
+      String verifyPassword, String email, String nombre) async {
     String url = "/auth/register";
 
     var jsonResponse = await _client.post(
@@ -36,13 +36,13 @@ class AuthenticationRepository {
             username: username,
             password: password,
             email: email,
-            name: name,
+            nombre: nombre,
             verifyPassword: verifyPassword));
     return RegisterResponse.fromJson(jsonDecode(jsonResponse));
   }
 
   Future<RegisterResponse> registerOwner(String username, String password,
-      String verifyPassword, String email, String name) async {
+      String verifyPassword, String email, String nombre) async {
     String url = "/auth/register/owner";
 
     var jsonResponse = await _client.post(
@@ -51,7 +51,7 @@ class AuthenticationRepository {
             username: username,
             password: password,
             email: email,
-            name: name,
+            nombre: nombre,
             verifyPassword: verifyPassword));
     return RegisterResponse.fromJson(jsonDecode(jsonResponse));
   }

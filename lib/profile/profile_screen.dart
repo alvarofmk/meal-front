@@ -42,7 +42,7 @@ class _ProfileUIState extends State<ProfileUI> {
             return Center(
                 child: Column(
               children: [
-                Text('Fallo al cargar los restaurantes'),
+                Text('Fallo al cargar el perfil'),
                 ElevatedButton(
                   onPressed: () {
                     context.read<AuthenticationBloc>().add(UserLoggedOut());
