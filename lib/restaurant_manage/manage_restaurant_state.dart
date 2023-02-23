@@ -8,7 +8,8 @@ enum ManageRestaurantStatus {
   failure,
   deleted,
   deleteFailure,
-  editSuccess
+  editSuccess,
+  createPlatoSuccess
 }
 
 class ManageRestaurantState extends Equatable {

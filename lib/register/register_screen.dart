@@ -208,7 +208,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
   void initState() {
     Timer(Duration(seconds: 3), () {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+          context,
+          MaterialPageRoute(
+              builder: (context) => HomeScreen.withIndex(
+                    indexInitial: 0,
+                  )));
     });
     super.initState();
   }

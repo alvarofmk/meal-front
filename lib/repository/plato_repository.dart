@@ -66,4 +66,13 @@ class PlatoRepository {
     var jsonResponse = await _client.putMultiPart(url, null, file, token);
     return PlatoDetailResult.fromJson(jsonDecode(jsonResponse));
   }
+
+  Future<PlatoDetailResult> addPlato(String restaurantId,
+      PlatoRequest platoRequest, PlatformFile file, String accessToken) async {
+    String url = baseUrl + "${restaurantId}";
+
+    var jsonResponse =
+        await _client.postMultiPart(url, platoRequest, file, accessToken);
+    return PlatoDetailResult.fromJson(jsonDecode(jsonResponse));
+  }
 }

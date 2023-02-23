@@ -124,10 +124,12 @@ class _PlatoUIState extends State<PlatoUI> {
                     verticalDirection: VerticalDirection.down,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Image.network(
-                        imgBase + state.plato!.imgUrl!,
-                        height: 300,
-                        fit: BoxFit.cover,
+                      Center(
+                        child: Image.network(
+                          imgBase + state.plato!.imgUrl!,
+                          height: 300,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                       Padding(
                         padding: EdgeInsets.all(15),

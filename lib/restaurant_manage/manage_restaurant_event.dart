@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:file_picker/file_picker.dart';
 
+import '../model/plato_request.dart';
 import '../model/restaurante_request.dart';
 
 abstract class ManageRestaurantEvent extends Equatable {
@@ -29,5 +30,11 @@ class EditRestaurant extends ManageRestaurantEvent {
 class ChangeImgEvent extends ManageRestaurantEvent {
   ChangeImgEvent(this.restaurantId, this.file);
   String restaurantId;
+  PlatformFile file;
+}
+
+class AddPlato extends ManageRestaurantEvent {
+  AddPlato(this.platoRequest, this.file);
+  PlatoRequest platoRequest;
   PlatformFile file;
 }

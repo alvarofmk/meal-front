@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -48,10 +49,8 @@ class _RestaurantFormState extends State<RestaurantForm> {
                     onSuccess: (context, state) {
                       LoadingDialog.hide(context);
 
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (_) => HomeScreen.withIndex(
-                                indexInitial: 0,
-                              )));
+                      Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (_) => SuccessScreen()));
                     },
                     onFailure: (context, state) {
                       LoadingDialog.hide(context);
@@ -188,6 +187,54 @@ class LoadingDialog extends StatelessWidget {
             padding: const EdgeInsets.all(12.0),
             child: const CircularProgressIndicator(),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class SuccessScreen extends StatefulWidget {
+  const SuccessScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SuccessScreen> createState() => _SuccessScreenState();
+}
+
+class _SuccessScreenState extends State<SuccessScreen> {
+  @override
+  void initState() {
+    Timer(Duration(seconds: 3), () {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => HomeScreen.withIndex(
+                    indexInitial: 0,
+                  )));
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Icon(
+              Icons.check_circle_outline_rounded,
+              size: 100,
+              color: Colors.white,
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'Creado con éxito',
+              style: TextStyle(fontSize: 24, color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 10),
+          ],
         ),
       ),
     );

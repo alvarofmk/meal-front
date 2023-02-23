@@ -303,7 +303,7 @@ class OwnerSection extends StatelessWidget {
         ElevatedButton(
             onPressed: () => Navigator.push(context,
                 MaterialPageRoute(builder: (context) => RestaurantForm())),
-            child: Text("Añadir nuevo resstaurante"))
+            child: Text("Añadir nuevo restaurante"))
       ],
     );
   }

@@ -272,10 +272,10 @@ class PlatoEditFormUI extends StatefulWidget {
   PlatoEditFormUI();
 
   @override
-  State<PlatoEditFormUI> createState() => _RestaurantEditFormUIState();
+  State<PlatoEditFormUI> createState() => _PlatoEditFormUIState();
 }
 
-class _RestaurantEditFormUIState extends State<PlatoEditFormUI> {
+class _PlatoEditFormUIState extends State<PlatoEditFormUI> {
   TextEditingController _nombreController = TextEditingController();
   TextEditingController _descripcionController = TextEditingController();
   TextEditingController _precioController = TextEditingController();

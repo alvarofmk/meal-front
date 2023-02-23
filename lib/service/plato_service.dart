@@ -51,4 +51,11 @@ class PlatoService {
     var user = await _authService.getCurrentUser();
     return _platoRepository.editImg(platoId, file, user!.accessToken);
   }
+
+  Future<PlatoDetailResult> add(
+      String restaurantId, PlatoRequest platoRequest, PlatformFile file) async {
+    var user = await _authService.getCurrentUser();
+    return _platoRepository.addPlato(
+        restaurantId, platoRequest, file, user!.accessToken);
+  }
 }
