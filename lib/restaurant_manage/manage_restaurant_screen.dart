@@ -103,28 +103,31 @@ class _ManageRestaurantUIState extends State<ManageRestaurantUI> {
                   Positioned(
                       right: 15,
                       bottom: 15,
-                      child: CircleAvatar(
-                        backgroundColor: Colors.red.shade700,
-                        child: IconButton(
-                          color: Colors.white,
-                          onPressed: () async {
-                            result = await FilePicker.platform.pickFiles(
-                              withData: true,
-                              allowMultiple: false,
-                              allowedExtensions: ['jpg', 'png'],
-                            );
-                            if (result != null) {
-                              BlocProvider.of<ManageRestaurantBloc>(context)
-                                ..add(ChangeImgEvent(
-                                    state.restaurante!.id!, result!.files[0]));
-                              setState(() {});
-                              result?.files.forEach((element) {
-                                print(element.name);
-                              });
-                            }
-                          },
-                          icon: Icon(Icons.edit),
+                      child: Tooltip(
+                        child: CircleAvatar(
+                          backgroundColor: Colors.red.shade700,
+                          child: IconButton(
+                            color: Colors.white,
+                            onPressed: () async {
+                              result = await FilePicker.platform.pickFiles(
+                                withData: true,
+                                allowMultiple: false,
+                                allowedExtensions: ['jpg', 'png'],
+                              );
+                              if (result != null) {
+                                BlocProvider.of<ManageRestaurantBloc>(context)
+                                  ..add(ChangeImgEvent(state.restaurante!.id!,
+                                      result!.files[0]));
+                                setState(() {});
+                                result?.files.forEach((element) {
+                                  print(element.name);
+                                });
+                              }
+                            },
+                            icon: Icon(Icons.edit),
+                          ),
                         ),
+                        message: "Cambiar imagen",
                       )),
                 ]),
                 Padding(

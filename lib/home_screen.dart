@@ -17,9 +17,11 @@ List<Widget> _widgetOptions = <Widget>[
     return Text("Loading");
   }),
   LandingScreen(),
-  Text(
-    'Carrito no implementado',
-  ),
+  Center(
+    child: Text(
+      '¡Próximamente!',
+    ),
+  )
 ];
 
 class HomeScreen extends StatefulWidget {

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -192,10 +194,20 @@ class _PlatoUIState extends State<PlatoUI> {
                               ),
                               if (state.plato!.valoracionMedia != null)
                                 if (!state.plato!.valoracionMedia!.isNaN)
-                                  Text(
-                                    "${state.plato!.valoracionMedia}",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w600),
+                                  Text.rich(
+                                    TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text:
+                                              "${roundDouble(state.plato!.valoracionMedia!, 2)}",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                        WidgetSpan(
+                                            child: Icon(Icons.star_rounded,
+                                                size: 17)),
+                                      ],
+                                    ),
                                   ),
                             ],
                           )),
@@ -282,7 +294,10 @@ class _PlatoUIState extends State<PlatoUI> {
     );
   }
 
-  rate() {}
+  double roundDouble(double value, int places) {
+    num mod = pow(10.0, places);
+    return ((value * mod).round().toDouble() / mod);
+  }
 }
 
 class ReviewItem extends StatelessWidget {

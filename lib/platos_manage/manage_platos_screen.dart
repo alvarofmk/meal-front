@@ -156,54 +156,63 @@ class _PlatoManageItemState extends State<PlatoManageItem> {
             children: [
               Padding(
                 padding: EdgeInsets.all(2),
-                child: CircleAvatar(
-                  backgroundColor: Colors.red.shade700,
-                  child: IconButton(
-                    color: Colors.white,
-                    onPressed: () async {
-                      result = await FilePicker.platform.pickFiles(
-                        withData: true,
-                        allowMultiple: false,
-                        allowedExtensions: ['jpg', 'png'],
-                      );
-                      if (result != null) {
-                        BlocProvider.of<PlatosManageBloc>(context)
-                          ..add(ChangeImgEvent(
-                              widget.plato.id!, result!.files[0]));
-                        setState(() {});
-                        result?.files.forEach((element) {
-                          print(element.name);
-                        });
-                      }
-                    },
-                    icon: Icon(Icons.image),
+                child: Tooltip(
+                  child: CircleAvatar(
+                    backgroundColor: Colors.red.shade700,
+                    child: IconButton(
+                      color: Colors.white,
+                      onPressed: () async {
+                        result = await FilePicker.platform.pickFiles(
+                          withData: true,
+                          allowMultiple: false,
+                          allowedExtensions: ['jpg', 'png'],
+                        );
+                        if (result != null) {
+                          BlocProvider.of<PlatosManageBloc>(context)
+                            ..add(ChangeImgEvent(
+                                widget.plato.id!, result!.files[0]));
+                          setState(() {});
+                          result?.files.forEach((element) {
+                            print(element.name);
+                          });
+                        }
+                      },
+                      icon: Icon(Icons.image),
+                    ),
                   ),
+                  message: "Cambiar imagen",
                 ),
               ),
               Padding(
                 padding: EdgeInsets.all(2),
-                child: CircleAvatar(
-                  backgroundColor: Colors.red.shade700,
-                  child: IconButton(
-                    color: Colors.white,
-                    onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (manageContext) =>
-                                PlatoEditForm(context, widget.plato.id!))),
-                    icon: Icon(Icons.edit),
+                child: Tooltip(
+                  child: CircleAvatar(
+                    backgroundColor: Colors.red.shade700,
+                    child: IconButton(
+                      color: Colors.white,
+                      onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (manageContext) =>
+                                  PlatoEditForm(context, widget.plato.id!))),
+                      icon: Icon(Icons.edit),
+                    ),
                   ),
+                  message: "Editar plato",
                 ),
               ),
               Padding(
                 padding: EdgeInsets.all(2),
-                child: CircleAvatar(
-                  backgroundColor: Colors.red.shade700,
-                  child: IconButton(
-                    color: Colors.white,
-                    onPressed: () => _dialogBuilder(context, widget.plato),
-                    icon: Icon(Icons.delete),
+                child: Tooltip(
+                  child: CircleAvatar(
+                    backgroundColor: Colors.red.shade700,
+                    child: IconButton(
+                      color: Colors.white,
+                      onPressed: () => _dialogBuilder(context, widget.plato),
+                      icon: Icon(Icons.delete),
+                    ),
                   ),
+                  message: "Borrar plato",
                 ),
               ),
             ],
