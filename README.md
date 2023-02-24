@@ -3,7 +3,7 @@
 Front end movil realizado con flutter [flutter](https://flutter.dev/), siguiendo el **patrón bloc** para gestionar la lógica de la aplicación.
 La aplicación gestiona un servicio de comida a domicilio de diferentes restaurantes, además de proporcionar la gestión de estos para sus respectivos propietarios, hay más información sobre el funcionamiento de la seguridad en el repositorio de back end.
 
-## FrontEnd
+## BackEnd
 
 Este repositorio es parte de un proyecto conjunto, consume datos de una API en spring, disponible en el siguiente repositorio. Tambien contiene información sobre los distintos usuarios de prueba para la aplicación.
 
